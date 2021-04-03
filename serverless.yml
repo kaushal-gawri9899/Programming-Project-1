@@ -1,0 +1,79 @@
+service: serverless-job-posting
+
+org: programmingproject
+
+provider:
+  name: aws
+  runtime: python3.7
+  region: us-east-1
+  timeout: 60
+  
+  
+resources:
+  Resources:
+    ApiGatewayAuthorizer:
+      DependsOn:
+        - ApiGatewayRestApi
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        Name: cognito-authorizer
+        IdentitySource: method.request.header.Authorization
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        Type: COGNITO_USER_POOLS
+        ProviderARNs: 
+          - arn:aws:cognito-idp:us-east-1:260383621052:userpool/us-east-1_YlxNmu1j2
+        
+
+
+functions:
+  booking:
+    handler: main.jobs
+    events:
+      - http:
+          path: /jobs
+          method: get
+          authorizer:
+            # type: COGNITO_USER_POOLS
+            # authorizerId:
+            #   Ref: ApiGatewayAuthorizer
+  create-job:
+    handler: main.create_job
+    events:
+      - http:
+          path: /create_job
+          method: post
+          # authorizer:
+          #   type: COGNITO_USER_POOLS
+          #   authorizerId:
+          #     Ref: ApiGatewayAuthorizer
+  # delete-booking:
+  #   handler: main.delete_booking
+  #   events:
+  #     - http:
+  #         path: /delete_booking
+  #         method: delete
+  #         authorizer:
+  #           type: COGNITO_USER_POOLS
+  #           authorizerId:
+  #             Ref: ApiGatewayAuthorizer
+  # edit-booking:
+  #   handler: main.update_booking
+  #   events:
+  #     - http:
+  #         path: /edit_booking
+  #         method: post
+  #         authorizer:
+  #           type: COGNITO_USER_POOLS
+  #           authorizerId:
+  #             Ref: ApiGatewayAuthorizer
+  # client-booking:
+  #   handler: main.get_client_bookings
+  #   events:
+  #     - http:
+  #         path: /client_booking
+  #         method: get
+  #         authorizer:
+  #           type: COGNITO_USER_POOLS
+  #           authorizerId:
+  #             Ref: ApiGatewayAuthorizer

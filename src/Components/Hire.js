@@ -1,6 +1,7 @@
 import React, { Component,useState, useEffect  } from 'react'
 import { withStyles,makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
+import axios from 'axios';
 import { forwardRef } from 'react';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
@@ -79,6 +80,7 @@ export default function Hire() {
         checkedA: true,
         checkedB: true,
     });
+    const [jobData, setJobData] = React.useState('');
     
     const handleChange = (event) => {
         setState({ ...state, [event.target.name]: event.target.checked });
@@ -94,6 +96,35 @@ export default function Hire() {
         <EditIcon color="primary" />
       </IconButton>
     );
+    // state = {
+    //     persons: []
+    //   }
+    const dataJob = {
+        data: []
+    }
+     
+    // const getAllData = () => {
+        axios.get('http://0.0.0.0:5000/jobs')
+        .then((response) => {
+            const allData = response.data
+            console.log(response.data.Items)
+            setJobData(response.data.Items);
+        })
+        .catch(error => console.error('Error'))
+//   /  }
+        console.log(jobData)
+   
+    // useEffect(() => {
+    //     // GET request using axios inside useEffect React hook
+    //     axios.get('http://0.0.0.0:5000/jobs')
+    //         .then((res) => {
+    //             console.log(res.data)
+    //         }).catch((error) => {
+    //             console.log(error)
+    //         });
+    
+    // // empty dependency array means this effect will only run once (like componentDidMount in classes)
+    // }, []);
     
     return (
         
@@ -123,8 +154,11 @@ export default function Hire() {
                     </Box>
                 </div>
                 <Box mt={2}>
-               
-                <TableContainer component={Paper}>
+                {/* <ul>
+                    { this.state.persons.map(person => <li>{person.email}</li>)}
+                </ul>
+                */}
+                {/* <TableContainer component={Paper}>
                     <Table className={classes.table} aria-label="customized table">
                         <TableHead>
                         <TableRow>
@@ -169,7 +203,7 @@ export default function Hire() {
                        
                         </TableBody>
                     </Table>
-                </TableContainer>
+                </TableContainer> */}
                 </Box>
        
             </Card>

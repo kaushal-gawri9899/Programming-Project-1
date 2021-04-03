@@ -7,6 +7,7 @@ import requests
 import os
 import botocore
 import requests
+import uuid
 
 dynamodb_client = boto3.client('dynamodb', region_name = "us-east-1")
 
@@ -110,4 +111,55 @@ def login():
         return jsonify(usertype)        
         
     return redirect(url_for('cognitoRoute.login_page'))
+
+
+@cognitoRoute.route('/create', methods=['GET','POST'])
+def getPosting():
+    if request.method == 'POST':
+        data = request.get_json()
+        jobTitle = data['jobTitle']
+        jobDescription = data['jobDescription']
+        location = data['location']
+        jobType = data['jobType']
+        workExperince = data['workExperince']
+        Id = uuid.uuid4()
+        email = "test@test.com"
+
+        
+        if jobType == 'a':
+            jobType = 'partTime'
+        else:
+            jobType = 'fullTime'
+
+        print(jobType)
+        print("here")
+        r = requests.post('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/create_job',
+            json= {"Id":str(Id),"jobTitle":jobTitle,"jobDescription":jobDescription,"location":location,"jobType":jobType,
+            "workExperince":workExperince,"email":email})
+        print(r.json)
+
+    
+
+     
+    print(request.get_json())
+    print(request.get_json()['location'])
+
+    return "a"
+
+@cognitoRoute.route('/jobs', methods=['GET','POST'])
+def getJobs():
+    r = requests.get('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/jobs')
+    print(r.json()['Items'])
+    # print(number_of_elements)
+    # dynamodb = boto3.resource('dynamodb',  region_name='us-east-1')
+
+    
+    # table = dynamodb.Table('Job_posting')
+    # response = table.query(
+    #     KeyConditionExpression=Key('email').eq("test@test.com")
+    # )
+    # print(response['Items'])
+    data = r.json()
+    print(data)
+    return data
 

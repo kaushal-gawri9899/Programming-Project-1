@@ -1,0 +1,2 @@
+<Button className="btn-primary" variant="primary">Search</Button>
+<Button className="btn-primary" variant="primary">Upload Resume</Button>

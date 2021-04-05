@@ -1,0 +1,24 @@
+.card{
+    margin-left: auto;
+    margin-right: auto;
+    width: auto;
+    height: 40;
+    margin-top: 10px;
+}
+
+.move{
+    padding-left: 1070px;
+}
+
+.button{
+    margin-bottom: 10px;
+    margin-left: 1080px;
+    
+}
+
+.details{
+    margin-right: 150px;
+    /* padding-right: 500px; */
+    /* padding-left: 500px; */
+    /* margin-left: 500px; */
+}

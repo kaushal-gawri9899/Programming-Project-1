@@ -1,10 +1,14 @@
 import React, { Component } from 'react'
-import './CSS/style.css'
-import Footer from "./Footer";
 import axios from 'axios';
+import './CSS/login.css'
 
 
 class Login extends React.Component {
+
+    static navigationOptions = {
+        header: null,
+    }
+
     constructor(props) {
         super(props)
 
@@ -72,18 +76,17 @@ class Login extends React.Component {
             
             information=res.data;
             
-            // this.state.userType=information.userType;
   
             console.log('Colors Data: ',information)
 
             if(information == 'Employee'){
                 this.props.history.push({ 
-                    pathname: '/EmployeeHome',
+                    pathname: '/',
                 });
             }
             else if(information == 'Employer'){
                 this.props.history.push({ 
-                    pathname: '/Home',
+                    pathname: '/Hire',
                 });
             }
 
@@ -123,6 +126,7 @@ class Login extends React.Component {
 
     render() {
         return (
+            
             <div className="container" id="container">
 	        <div className="form-container sign-up-container">
 	
@@ -193,7 +197,6 @@ class Login extends React.Component {
 	</div>
     <div>
     </div>
-    <Footer />
     </div>
             
         )

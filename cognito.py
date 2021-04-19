@@ -39,21 +39,12 @@ cognito_client = boto3.client('cognito-idp', region_name='us-east-1')
 
 BUCKET_NAME='programming-project-resume'
 
+global stored_email
 
 
 cognitoRoute = Blueprint('cognitoRoute', __name__)
 
-@cognitoRoute.route('/auth/signup', methods=['GET'])
-def create_account():
-    return render_template("login.html")
 
-@cognitoRoute.route('/', methods=['GET'])
-def login_page():
-    return render_template("uploadFile.html")
-
-@cognitoRoute.route('/home', methods=['GET'])
-def home():
-    return render_template("home.html")
 
 @cognitoRoute.route('/auth/signup', methods=['POST'])
 def signup():
@@ -85,10 +76,10 @@ def signup():
         r = requests.post('https://kor6ktyjri.execute-api.us-east-1.amazonaws.com/dev/add_usertype',
             json= {"email":user_email,"usertype":usertype})
 
-        return redirect(url_for('cognitoRoute.login'))
+        return 'redirect(url_for(''))'
 
 
-    return redirect(url_for('cognitoRoute.create_account'))
+    return 'a'
 
 
 @cognitoRoute.route('/auth/login', methods=['GET','POST'])
@@ -100,11 +91,11 @@ def login():
         password = data['password']
         stored_email = user_email
         
-        dynamodb = boto3.resource('dynamodb',  region_name='us-east-1')
+       
 
 
-        response = None
-        session['idToken'] = None 
+        
+        # session['idToken'] = ' ' 
 
         try:
             response =  cognito_client.initiate_auth(ClientId=APP_CLIENT_ID,
@@ -114,9 +105,9 @@ def login():
                                         'PASSWORD': password
                                         }
             )
-            
+            # print(response['AuthenticationResult'])
             session['idToken'] = response['AuthenticationResult']['IdToken']
-           
+            session['test'] = 'test'
 
         except ClientError as e:
             if e.response['Error']['Code'] == 'UserNotFoundException':
@@ -130,20 +121,22 @@ def login():
                 print("Not Valid")
                 return render_template("login.html", error = "Wrong Email or Password")
         
-        print(session['idToken'])
+        # print(session['idToken'])
         r = requests.get("https://kor6ktyjri.execute-api.us-east-1.amazonaws.com/dev/get_user", 
         headers={"Authorization": session['idToken']})       
         
         usertype = r.json()['Items'][0]['usertype']
         return jsonify(usertype)        
         
-    return redirect(url_for('cognitoRoute.login_page'))
+    return 'a'
 
 
 @cognitoRoute.route('/upload', methods=['GET','POST'])
 def fileUpload():
     target=os.path.join(UPLOAD_FOLDER,'resume_saved')
     
+    
+
     if not os.path.isdir(target):
         os.mkdir(target)
     
@@ -153,7 +146,7 @@ def fileUpload():
         filename = secure_filename(stored_email)
         destination="/".join([target, filename])
         file.save(destination)
-        session['uploadFilePath']=destination
+        # session['uploadFilePath']=destination
         uploaded_file_name = 'resume_saved/' + filename
         
         s3_client.upload_file(
@@ -170,7 +163,7 @@ def fileUpload():
     r = requests.post("https://kor6ktyjri.execute-api.us-east-1.amazonaws.com/dev/resume", 
         json= {"email":stored_email,"experience":str(experience),"name":str(name)}) 
     
-    print(data['name'])
+    # print(data['name'])
     
         
     response = " "
@@ -182,7 +175,7 @@ def job_match():
     resume = extract_text(stored_email)
     text_resume = str(resume)#Summarize the text with ratio 0.1 (10% of the total words.)
     summarized_resume = summarize(text_resume, ratio=0.5)
-    print(summarized_resume)
+    # print(summarized_resume)
 
     text = "Given Text" # Prompt for the Job description.
     # Convert text to string format
@@ -196,7 +189,7 @@ def job_match():
 
     matchPercentage = cosine_similarity(count_matrix)[0][1] * 100
     matchPercentage = round(matchPercentage, 2) # round to two decimal
-    print("Your resume matches about “+ str(matchPercentage)+ “% of the job description.")
+    # print("Your resume matches about “+ str(matchPercentage)+ “% of the job description.")
 
     return " "
 
@@ -212,24 +205,25 @@ def getPosting():
         Id = uuid.uuid4()
         email = "test@test.com"
 
+
         
         if jobType == 'a':
             jobType = 'partTime'
         else:
             jobType = 'fullTime'
 
-        print(jobType)
-        print("here")
+        # print(jobType)
+        # print("here")
         r = requests.post('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/create_job',
             json= {"Id":str(Id),"jobTitle":jobTitle,"jobDescription":jobDescription,"location":location,"jobType":jobType,
             "workExperince":workExperince,"email":email})
-        print(r.json)
+        # print(r.json)
 
     
 
      
-    print(request.get_json())
-    print(request.get_json()['location'])
+    # print(request.get_json())
+    # print(request.get_json()['location'])
 
     return "a"
 
@@ -247,6 +241,8 @@ def getJobs():
     # )
     # print(response['Items'])
     data = r.json()
-    print(data)
+    print("HEYYYYYYYY")
+    print(session['test'])
+    # print(data)
     
     return data

@@ -129,7 +129,7 @@ export function MyAppBar() {
               </Badge>
             </IconButton>
             <Box m={2}>
-                <Button color="inherit" href="https://stackoverflow.com/questions/37843495/material-ui-adding-link-component-from-react-router">
+                <Button color="inherit" href="Dashboard">
                     Dashboard
                 </Button>
             </Box>

@@ -1,15 +1,15 @@
-import React, { Component,useState, useEffect  } from 'react'
+import React, { useState} from 'react'
 import Box from '@material-ui/core/Box';
-import SplitPane, { Pane } from 'react-split-pane';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import LooksOneIcon from '@material-ui/icons/LooksOne';
-import LooksTwoIcon from '@material-ui/icons/LooksTwo';
-import Looks3Icon from '@material-ui/icons/Looks3';
+import SplitPane from 'react-split-pane';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+// import LooksOneIcon from '@material-ui/icons/LooksOne';
+// import LooksTwoIcon from '@material-ui/icons/LooksTwo';
+// import Looks3Icon from '@material-ui/icons/Looks3';
 import { Typography } from '@material-ui/core';
-import { MuiThemeProvider, ThemeProvider, createMuiTheme,makeStyles,withStyles} from "@material-ui/core/styles";
+import { MuiThemeProvider, createMuiTheme,makeStyles,withStyles} from "@material-ui/core/styles";
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
-import {StyleSheet,View } from 'react-native';
+import {View } from 'react-native';
 import { green } from '@material-ui/core/colors';
 import Radio from '@material-ui/core/Radio';
 import Button from '@material-ui/core/Button';
@@ -34,7 +34,7 @@ const styles = {
     height: '100%',
 };
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     root: {
       width: '100%',
     },
@@ -61,23 +61,23 @@ const GreenRadio = withStyles({
     checked: {},
 })((props) => <Radio color="default" {...props} />);
   
-const stylesBorder = StyleSheet.create({
-    viewStyleForLine: {
-        borderBottomColor: "black", 
-        borderBottomWidth: StyleSheet.hairlineWidth, 
-        alignSelf:'stretch',
-        width: "100%"
-      }
-})
-const ColoredLine = ({ color }) => (
-    <hr
-        style={{
-            color: color,
-            backgroundColor: color,
-            height: 0.5
-        }}
-    />
-);
+// const stylesBorder = StyleSheet.create({
+//     viewStyleForLine: {
+//         borderBottomColor: "black", 
+//         borderBottomWidth: StyleSheet.hairlineWidth, 
+//         alignSelf:'stretch',
+//         width: "100%"
+//       }
+// })
+// const ColoredLine = ({ color }) => (
+//     <hr
+//         style={{
+//             color: color,
+//             backgroundColor: color,
+//             height: 0.5
+//         }}
+//     />
+// );
 const theme = createMuiTheme({
     typography: {
       fontFamily: [

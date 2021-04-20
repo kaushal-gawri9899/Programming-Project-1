@@ -1,21 +1,21 @@
-import React, { Component,useState, useEffect  } from 'react'
+import React from 'react'
 import { withStyles,makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
-import axios from 'axios';
-import { forwardRef } from 'react';
+// import axios from 'axios';
+// import { forwardRef } from 'react';
 import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
+// import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
+// import Table from '@material-ui/core/Table';
+// import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
+// import TableContainer from '@material-ui/core/TableContainer';
+// import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import Switch from '@material-ui/core/Switch';
+// import Paper from '@material-ui/core/Paper';
+// import Switch from '@material-ui/core/Switch';
 import { IconButton } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
@@ -104,15 +104,15 @@ export default function Hire() {
     }
      
     // const getAllData = () => {
-        axios.get('http://0.0.0.0:5000/jobs')
-        .then((response) => {
-            const allData = response.data
-            console.log(response.data.Items)
-            setJobData(response.data.Items);
-        })
-        .catch(error => console.error('Error'))
-//   /  }
-        console.log(jobData)
+//         axios.get('http://0.0.0.0:5000/jobs')
+//         .then((response) => {
+//             const allData = response.data
+//             console.log(response.data.Items)
+//             setJobData(response.data.Items);
+//         })
+//         .catch(error => console.error('Error'))
+// //   /  }
+//         console.log(jobData)
    
     // useEffect(() => {
     //     // GET request using axios inside useEffect React hook
@@ -209,5 +209,5 @@ export default function Hire() {
             </Card>
       </Box>
     );
-  }
+}
   

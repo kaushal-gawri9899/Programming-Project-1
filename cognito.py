@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, redirect, url_for, request, jsonify, session, Blueprint
+from flask import Flask, render_template, redirect, url_for, request, jsonify, session, Blueprint, jsonify
 import boto3
 from botocore.exceptions import ClientError
 from boto3.dynamodb.conditions import Key
@@ -9,6 +9,8 @@ import botocore
 import requests
 from werkzeug.utils import secure_filename
 from tika import parser
+
+# import numpy
 from pyresparser import ResumeParser
 from gensim.summarization.summarizer import summarize
 from gensim.summarization import keywords# Import the library
@@ -85,16 +87,18 @@ def signup():
 @cognitoRoute.route('/auth/login', methods=['GET','POST'])
 def login():
     if request.method == 'POST':
-        global stored_email
+        # global stored_email
         data = request.get_json()
+        print(data)
         user_email = data['email']
         password = data['password']
-        stored_email = user_email
+        # return jsonify({ "userType": "Employer", "idToken": ""})
+        # stored_email = user_email
         
        
 
 
-        
+        id_token = ''
         # session['idToken'] = ' ' 
 
         try:
@@ -106,8 +110,9 @@ def login():
                                         }
             )
             # print(response['AuthenticationResult'])
-            session['idToken'] = response['AuthenticationResult']['IdToken']
-            session['test'] = 'test'
+            id_token = response['AuthenticationResult']['IdToken']
+            # session['idToken'] = response['AuthenticationResult']['IdToken']
+           
 
         except ClientError as e:
             if e.response['Error']['Code'] == 'UserNotFoundException':
@@ -123,10 +128,10 @@ def login():
         
         # print(session['idToken'])
         r = requests.get("https://kor6ktyjri.execute-api.us-east-1.amazonaws.com/dev/get_user", 
-        headers={"Authorization": session['idToken']})       
+        headers={"Authorization": id_token })       
         
-        usertype = r.json()['Items'][0]['usertype']
-        return jsonify(usertype)        
+        usertype = r.json().get('Items', [])[0]['usertype']
+        return jsonify({ 'userType': usertype, 'idToken': id_token})        
         
     return 'a'
 
@@ -202,8 +207,10 @@ def getPosting():
         location = data['location']
         jobType = data['jobType']
         workExperince = data['workExperince']
+        sessionId = data['sessionId']
+        print(sessionId)
         Id = uuid.uuid4()
-        email = "test@test.com"
+        # email = "test@test.com"
 
 
         
@@ -215,21 +222,32 @@ def getPosting():
         # print(jobType)
         # print("here")
         r = requests.post('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/create_job',
+            headers={"Authorization": sessionId},
             json= {"Id":str(Id),"jobTitle":jobTitle,"jobDescription":jobDescription,"location":location,"jobType":jobType,
-            "workExperince":workExperince,"email":email})
+            "workExperince":workExperince})
         # print(r.json)
+
 
     
 
      
-    # print(request.get_json())
+    print(r.json())
     # print(request.get_json()['location'])
 
     return "a"
 
 @cognitoRoute.route('/jobs', methods=['GET','POST'])
 def getJobs():
-    r = requests.get('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/jobs')
+    print('ss')
+    # print(request.get_json())
+    headers = request.headers.get('Authorization')
+    print(request.headers.get('Authorization'))
+    print(request.headers)
+   
+    r = requests.get('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/jobs',
+    headers={"Authorization": headers}
+    )
+    # 
     # print(r.json()['Items'])
     # print(number_of_elements)
     # dynamodb = boto3.resource('dynamodb',  region_name='us-east-1')
@@ -242,7 +260,7 @@ def getJobs():
     # print(response['Items'])
     data = r.json()
     print("HEYYYYYYYY")
-    print(session['test'])
+    # print(session['test'])
     # print(data)
     
     return data

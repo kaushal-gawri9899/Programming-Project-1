@@ -1,7 +1,7 @@
 import React, {useState, useContext  } from 'react'
 import Box from '@material-ui/core/Box';
 import SplitPane, { Pane } from 'react-split-pane';
-
+import 'date-fns';
 import { Typography } from '@material-ui/core';
 import { MuiThemeProvider, createMuiTheme,makeStyles,withStyles} from "@material-ui/core/styles";
 import TextField from '@material-ui/core/TextField';
@@ -16,6 +16,14 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import StepContent from '@material-ui/core/StepContent';
 import {SessionContext} from '../context/SessionContext'
+import Grid from '@material-ui/core/Grid';
+import DateFnsUtils from '@date-io/date-fns';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
+import { useHistory } from "react-router";
 
 const greenTheme = createMuiTheme({
     palette: {
@@ -109,6 +117,7 @@ export default function CreatePost() {
     const [jobDescription, setDescription] = useState();
     const [location, setLocation] = useState();
     const [workExperince, setWorkExperince] = useState();
+    let jobSelectedType = " ";
 
     console.log(state.session)
     console.log(selectedValue);
@@ -116,7 +125,13 @@ export default function CreatePost() {
     const classes = useStyles();
     const [activeStep, setActiveStep] = React.useState(0);
     const steps = getSteps();
+    const history = useHistory();
+    const [selectedDate, setSelectedDate] = React.useState(new Date('2014-08-18T21:11:54'));
 
+    const handleDateChange = (date) => {
+      setSelectedDate(date);
+    };
+  
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
     
@@ -148,6 +163,12 @@ export default function CreatePost() {
         axios.post('http://0.0.0.0:5000/create', userObject)
             .then((res) => {
                 console.log(res.data)
+                history.push({
+                    pathname:  "/Hire",
+                    state: {
+                    response: "messageFromServer "
+                    } 
+                });
             }).catch((error) => {
                 console.log(error)
             });
@@ -194,6 +215,7 @@ export default function CreatePost() {
                                           value={1}
                                         >
                                           {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                                          {/* {activeStep === steps.length - 1 ? 'CREATE JOB': 'Next'} */}
                                         </Button>
                                         
                                       </div>
@@ -247,16 +269,17 @@ export default function CreatePost() {
                                 <Box mt={1} ml={89}>
                                     <GreenRadio
                                         checked={{selectedValue} === 'a'}
-                                        onChange={() => setSelectedValue('a')}
+                                        onChange={() => setSelectedValue('Part Time')}
                                     
                                         name="radio-button-demo"
+                                        jobSelectedType = "Part Time"
                                         inputProps={{ 'aria-label': 'A' }}
                                     />
                                     <Typography variant="h7">PART-TIME</Typography>
                                     <GreenRadio
                                         checked={{selectedValue} === 'b'}
-                                        onChange={() => setSelectedValue('b')}
-                                        
+                                        onChange={() => setSelectedValue('Full Time')}
+                                        jobSelectedType = "Full Time"
                                         name="radio-button-demo"
                                         inputProps={{ 'aria-label': 'B' }}
                                     />
@@ -386,7 +409,7 @@ export default function CreatePost() {
                                     label="Required"
                                     value = {location}
                                     onChange={(e) => setLocation(e.target.value)}
-                                    defaultValue="Location"
+                                    defaultValue=""
                                     variant="outlined"
                                     style = {{width: 500}}
                                     />
@@ -403,10 +426,32 @@ export default function CreatePost() {
                                     label="Required"
                                     value = {workExperince}
                                     onChange={(e) => setWorkExperince(e.target.value)}
-                                    defaultValue="Work Experince"
+                                    defaultValue=""
                                     variant="outlined"
                                     style = {{width: 500}}
                                     />
+                        </Box>
+                        <Box mt={4} ml={5}>
+
+                       
+                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                <Grid container justify="flex-start">
+                                    <KeyboardDatePicker
+                                        disableToolbar
+                                        variant="inline"
+                                        format="MM/dd/yyyy"
+                                        margin="normal"
+                                        id="date-picker-inline"
+                                        label="Start Date"
+                                        value={selectedDate}
+                                        onChange={handleDateChange}
+                                        KeyboardButtonProps={{
+                                            'aria-label': 'change date',
+                                    }}
+                                    />
+                                
+                                </Grid>
+                            </MuiPickersUtilsProvider>
                         </Box>
                         <Box ml={2} mt={48}> 
                             <View
@@ -456,7 +501,13 @@ export default function CreatePost() {
                                  >
                                    Back
                                  </Button>
-                                 <Button
+                                 <Button 
+                                 onClick={handleSubmit} 
+                                 variant="contained" 
+                                 color="primary" 
+                                 size="large"
+                                    >
+                                 {/* <Button
                                    variant="contained"
                                    color="primary"
                                    onClick={handleNext}
@@ -464,8 +515,8 @@ export default function CreatePost() {
                                    size="large" 
                                  //   onClick={() => handleNext}
                                    value={1}
-                                 >
-                                   {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                                 > */}
+                                   {activeStep === steps.length - 1 ? 'POST JOB' : 'Next'}
                                  </Button>
                                  
                                </div>
@@ -483,14 +534,111 @@ export default function CreatePost() {
                        </Paper>
                      )}
                    </div>
-                <form onSubmit={handleSubmit}>
-                <Box ml={120} mt={1}>
+                   <div>
+                        <Box ml={2} mt={1}> 
+                            <View
+                                style={{
+                                borderBottomColor: '#E1E1E1',
+                                borderBottomWidth: 2,
+                                width: "95%",
+                                alignItems:'left',
+                            }}
+                                    
+                        /></Box>
+                        <Box mt={4} ml={5}>
+                       
+                            <Typography variant="h7">JOB TITLE</Typography>
+                              
+                        </Box>
+
+                        <Box mt={4} ml={5}>
+                                <TextField               
+                                    id="standard-disabled"  
+                                    disabled
+                                    value = {jobTitle}          
+                                   
+                                    style = {{width: 500}}
+                                    />
+                        </Box>
+
+                        <Box mt={4} ml={5}>
+                       
+                            <Typography variant="h7">JOB DESCRIPTION</Typography>
+                         
+                        </Box>
+                        <Box mt={4} ml={5}>
+                                <TextField               
+                                    id="standard-disabled"  
+                                    disabled
+                                    value = {jobDescription}          
+                                    multiline
+                                    rows={3}
+                               
+                                   
+                                    style = {{width: 500}}
+                                    />
+                        </Box>
+                        <Box mt={4} ml={5}>
+                       
+                            <Typography variant="h7">JOB TYPE</Typography>
+                    
+                        </Box>
+                        <Box mt={4} ml={5}>
+                                <TextField               
+                                    id="standard-disabled"  
+                                    disabled
+                                    value = {selectedValue}          
+                                    style = {{width: 500}}
+                                />
+                        </Box>
+                        <Box mt={4} ml={5}>
+                       
+                            <Typography variant="h7">LOCATION</Typography>
+               
+                        </Box>
+                        <Box mt={4} ml={5}>
+                            <TextField               
+                               id="standard-disabled"  
+                               disabled
+                               value = {location}          
+                               style = {{width: 500}}
+                            />
+                        </Box>
+                        <Box mt={4} ml={5}>
+                       
+                            <Typography variant="h7">WORK EXPERINCE </Typography>
+          
+                        </Box>
+                        <Box mt={4} ml={5}>
+                            <TextField               
+                                id="standard-disabled"  
+                                disabled
+                                value = {workExperince}          
+                                style = {{width: 500}}
+                            />
+                        </Box>
+                        <Box mt={4} ml={5}>
+                       
+                       <Typography variant="h7">START DATE</Typography>
+          
+                        </Box>
+                        <Box mt={4} ml={5}>
+                            <TextField               
+                                id="standard-disabled"  
+                                disabled
+                                value = {selectedDate}          
+                                style = {{width: 500}}
+                            />
+                        </Box>
+                   </div>
+                {/* <form onSubmit={handleSubmit}>
+                <Box mt={4} ml={5}>
                     <MuiThemeProvider theme={greenTheme}>
 
                         <Button onClick={handleSubmit} variant="contained" color="primary" size="large">POST JOB</Button>
                     </MuiThemeProvider>
                 </Box>
-                </form>
+                </form> */}
                 </SplitPane>
             </div>
         )

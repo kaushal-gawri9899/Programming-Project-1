@@ -22,7 +22,7 @@ export default function JobsTable() {
             },
         })
         .then((res) => {
-          
+            console.log(res.data.Items)
             setColorsData(res.data.Items);
         })
         .catch((err) => {

@@ -135,7 +135,7 @@ export default function Hire() {
 
       useEffect(() => {
         fetchUser();
-        console.log(jobData['0']);
+        // console.log(jobData['0']);
       },[setJobData]
       )
 
@@ -175,7 +175,7 @@ export default function Hire() {
                     
                 </div>
                 <Box mt={2}>
-                    {contextType.session}
+                   
                
                   <JobsTable/>
                 {/* <h1>{jobData}</h1> */}

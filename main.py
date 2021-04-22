@@ -1,4 +1,5 @@
-
+from warnings import simplefilter 
+simplefilter(action='ignore', category=DeprecationWarning)
 import os
 from flask import Flask, render_template, redirect, url_for, request, jsonify, session
 import boto3

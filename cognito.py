@@ -1,22 +1,24 @@
+from warnings import simplefilter 
+simplefilter(action='ignore', category=DeprecationWarning)
 import os
 from flask import Flask, render_template, redirect, url_for, request, jsonify, session, Blueprint, jsonify
 import boto3
 from botocore.exceptions import ClientError
-from boto3.dynamodb.conditions import Key
+from boto3.dynamodb.conditions import Key, Attr
 import requests
 import os
 import botocore
 import requests
 from werkzeug.utils import secure_filename
 from tika import parser
+import json
 
-# import numpy
 from pyresparser import ResumeParser
-from gensim.summarization.summarizer import summarize
-from gensim.summarization import keywords# Import the library
-from pdfminer.high_level import extract_text
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+# from gensim.summarization.summarizer import summarize
+# from gensim.summarization import keywords# Import the library
+# from pdfminer.high_level import extract_text
+# from sklearn.feature_extraction.text import CountVectorizer
+# from sklearn.metrics.pairwise import cosine_similarity
 import docx2txt
 import uuid
 
@@ -199,7 +201,7 @@ def job_match():
     return " "
 
 @cognitoRoute.route('/create', methods=['GET','POST'])
-def getPosting():
+def postPosting():
     if request.method == 'POST':
         data = request.get_json()
         jobTitle = data['jobTitle']
@@ -214,10 +216,10 @@ def getPosting():
 
 
         
-        if jobType == 'a':
-            jobType = 'partTime'
-        else:
-            jobType = 'fullTime'
+        # if jobType == 'a':
+        #     jobType = 'partTime'
+        # else:
+        #     jobType = 'fullTime'
 
         # print(jobType)
         # print("here")
@@ -241,9 +243,36 @@ def getJobs():
     print('ss')
     # print(request.get_json())
     headers = request.headers.get('Authorization')
-    print(request.headers.get('Authorization'))
-    print(request.headers)
-   
+    # print(request.headers.get('Authorization'))
+    # print(request.headers)
+    # dynamodb = boto3.resource('dynamodb',  region_name='us-east-1')
+    # table = dynamodb.Table('Job_Postings')
+    # response = table.query(
+    #         KeyConditionExpression=Key('email').eq('prabhav@mehra.com')
+    # )
+    # print(response)
+    # dynamodb_client = boto3.client('dynamodb', region_name="us-east-1")
+    # response = dynamodb_client.scan(
+    #     # FilterExpression=Attr('email').eq("prabhav@mehra.com"),
+        
+    #     ExpressionAttributeNames={
+    #         '#JT': 'jobType',
+    #         '#JD': 'jobDescription',
+    #         '#L': 'location',
+    #         '#WE': 'workExperience',
+    #         '#JI': 'jobTitle',
+            
+    #     },
+    #     ExpressionAttributeValues={
+    #         ':a': {
+    #             'S': 'prabhav@mehra.com',
+    #         },
+    #     },
+    #     FilterExpression='email = :a',
+    #     ProjectionExpression='#JT,#JD,#L,#WE,#JI',
+    #     TableName='Job_Postings',
+    # )
+    # print(response)
     r = requests.get('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/jobs',
     headers={"Authorization": headers}
     )
@@ -259,7 +288,19 @@ def getJobs():
     # )
     # print(response['Items'])
     data = r.json()
-    print("HEYYYYYYYY")
+    new_d = json.loads(r)
+    items = data['Items']
+    print(new_d)
+    # print(readable_json[0]['firstName']])
+    count = data['Count']
+    # print(data['Items']['jobType'])
+    # json = ' '
+    # for i in range(count):
+    #     print(i)
+    #     json = 'Items'
+    # print(count)
+    # print(data)
+   
     # print(session['test'])
     # print(data)
     

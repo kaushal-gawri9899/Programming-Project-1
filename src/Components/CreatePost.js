@@ -1,12 +1,9 @@
-import React, { Component,useState, useEffect  } from 'react'
+import React, {useState, useContext  } from 'react'
 import Box from '@material-ui/core/Box';
 import SplitPane, { Pane } from 'react-split-pane';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import LooksOneIcon from '@material-ui/icons/LooksOne';
-import LooksTwoIcon from '@material-ui/icons/LooksTwo';
-import Looks3Icon from '@material-ui/icons/Looks3';
+
 import { Typography } from '@material-ui/core';
-import { MuiThemeProvider, ThemeProvider, createMuiTheme,makeStyles,withStyles} from "@material-ui/core/styles";
+import { MuiThemeProvider, createMuiTheme,makeStyles,withStyles} from "@material-ui/core/styles";
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import {StyleSheet,View } from 'react-native';
@@ -18,6 +15,7 @@ import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import StepContent from '@material-ui/core/StepContent';
+import {SessionContext} from '../context/SessionContext'
 
 const greenTheme = createMuiTheme({
     palette: {
@@ -106,13 +104,13 @@ function getStepContent(step) {
 export default function CreatePost() {
     const [page, setPageNumber] = useState(1);
     const [selectedValue, setSelectedValue] = useState('a');
-
+    const state = useContext(SessionContext)
     const [jobTitle, setTitle] = useState();
     const [jobDescription, setDescription] = useState();
     const [location, setLocation] = useState();
     const [workExperince, setWorkExperince] = useState();
 
-  
+    console.log(state.session)
     console.log(selectedValue);
     console.log(page)
     const classes = useStyles();
@@ -121,6 +119,7 @@ export default function CreatePost() {
 
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    
     };
 
     const handleBack = () => {
@@ -140,7 +139,8 @@ export default function CreatePost() {
             jobDescription: jobDescription,
             location: location,
             jobType: selectedValue,
-            workExperince: workExperince
+            workExperince: workExperince,
+            sessionId: state.session
 
         };
         console.log(userObject)
@@ -167,46 +167,7 @@ export default function CreatePost() {
                                 defaultSize={300}
                                 resizerStyle={styles}>
                         
-                             {/* <div >
-                                <Box mt={5} ml={5}>
-                                    <h2 style={{ color: '#3E3F3F' }}>Posting Setup</h2>
-                                </Box>
-            
-                                <Box mt={0} ml={7}>
-                                    <div style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        flexWrap: 'wrap',
-                                    }}>
-                                        <LooksOneIcon fontSize="large" style={{ color: 'green' }} />
-                                        <h3 style={{ color: '#A6A6A6' }}>&nbsp;&nbsp;Description</h3>
-                                    </div>  
-                                   
-                                </Box>
-                                <Box mt={0} ml={7}>
-                                    <div style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        flexWrap: 'wrap',
-                                    }}>
-                                        <LooksTwoIcon fontSize="large"/>
-                                        <h3 style={{ color: '#A6A6A6' }}>&nbsp;&nbsp;Location</h3>
-                                    </div>  
-                                    {/* <h3 style={{ color: '#A6A6A6' }}>Location</h3> */}
-                                {/* </Box>
-                                <Box mt={0} ml={7}>
-                                <div style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        flexWrap: 'wrap',
-                                    }}>
-                                        <Looks3Icon fontSize="large"/>
-                                        <h3 style={{ color: '#A6A6A6' }}>&nbsp;&nbsp;Question</h3>
-                                    </div>  
-                                    {/* <h3 style={{ color: '#A6A6A6' }}>Question</h3> */}
-                                {/* </Box>
-                                
-                            </div>   */}
+                           
                             <div className={classes.root}>
                             <Stepper activeStep={activeStep} orientation="vertical">
                               {steps.map((label, index) => (

@@ -1,4 +1,4 @@
-import React, { Component,useState, useEffect  } from 'react'
+import React, { Component,useState, useEffect,useContext  } from 'react'
 import { withStyles,makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import axios from 'axios';
@@ -22,8 +22,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import HireTable from './HireTable'
 import JobsTable from './JobsTable'
 import {MyAppBar} from './AppBar';
-
-
+import { SessionProvider, SessionContext} from '../context/SessionContext'
 
 
   
@@ -141,7 +140,8 @@ export default function Hire() {
       )
 
       
-      
+    const contextType = useContext(SessionContext);
+    
 
     
     return (
@@ -175,7 +175,8 @@ export default function Hire() {
                     
                 </div>
                 <Box mt={2}>
-
+                    {contextType.session}
+               
                   <JobsTable/>
                 {/* <h1>{jobData}</h1> */}
                 {/* <ul>

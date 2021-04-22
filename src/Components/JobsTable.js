@@ -10,6 +10,14 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import { SessionProvider, SessionContext} from '../context/SessionContext'
 
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
+import { SessionProvider, SessionContext} from '../context/SessionContext'
 
 export default function JobsTable() {
     const state = useContext(SessionContext)
@@ -26,6 +34,8 @@ export default function JobsTable() {
             console.log(res.data);
             setColorsData(res.data);
             
+            console.log(res.data.Items)
+            setColorsData(res.data.Items);
         })
         .catch((err) => {
             console.log(err);
@@ -63,6 +73,14 @@ export default function JobsTable() {
                     <TableCell align="right">{d.jobDescription}</TableCell>
 
                     <TableCell align="right">{d.workExperince}</TableCell>
+                   
+                    <TableRow key={d.jobDescription}>
+                    <TableCell component="th" scope="row">
+                        {d.jobTitle}
+                    </TableCell>
+                    <TableCell align="right">{d.location}</TableCell>
+                    <TableCell align="right">{d.jobDescription}</TableCell>
+                    <TableCell align="right">{d.workExperience}</TableCell>
                     <TableCell align="right">{d.jobType}</TableCell>
                     </TableRow>
                 );

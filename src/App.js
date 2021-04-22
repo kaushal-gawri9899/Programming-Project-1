@@ -2,11 +2,18 @@ import React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Hire from "./Components/Hire";
 import CreatePost from "./Components/CreatePost";
+
 import UploadFile from "./Components/UploadFile";
 import Button from "./Components/Button";
 import { SessionProvider } from "./context/SessionContext";
 import SignIn from './Components/SignIn'
 import SignUp from './Components/Signup'
+
+import Login from "./Components/Login";
+import UploadFile from "./Components/UploadFile";
+import Button from "./Components/Button";
+import { SessionProvider } from "./context/SessionContext";
+
 
 function App() {
   return (
@@ -20,6 +27,13 @@ function App() {
             <Route exact path="/upload" component={UploadFile}></Route>
             <Route path="/hire" component={Hire}></Route>
             <Route path="/button" component={Button}></Route>
+
+
+            <Route exact path="/" component={Login}></Route>
+            <Route exact path="/upload" component={UploadFile}></Route>
+            <Route path="/hire" component={Hire}></Route>
+            <Route path="/button" component={Button}></Route>
+
 
             <Route path="/createPost" component={CreatePost}></Route>
           </Switch>

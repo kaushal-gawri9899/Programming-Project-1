@@ -84,7 +84,7 @@ export default function SignIn() {
   
         if(res.data.userType == 'Employee'){
             history.push({
-                pathname:  "/",
+                pathname:  "/employee",
                 state: {
                 response: "messageFromServer "
                 } 

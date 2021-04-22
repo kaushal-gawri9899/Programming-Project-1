@@ -132,7 +132,11 @@ export default function Hire() {
 
       // }
 
-
+      // useEffect(() => {
+      //   fetchUser();
+      //   // console.log(jobData['0']);
+      // },[setJobData]
+      // )
 
       
     const contextType = useContext(SessionContext);

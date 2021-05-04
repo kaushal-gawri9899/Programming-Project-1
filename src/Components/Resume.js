@@ -1,51 +1,91 @@
-import { Component } from "react";
-import React from 'react';
+import React,{useEffect, useState, useContext, useProps } from "react";
+import { Box, Typography, Grid, Button, makeStyles } from "@material-ui/core";
+import { SessionProvider, SessionContext} from '../context/SessionContext'
+import axios from "axios";
 
-export default class Resume extends Component {
-      constructor(props) {
-    super(props);
+export default function Resume() {
 
-    this.state = {
-      imageURL: '',
-    };
+    // const data = new FormData();
+    const [selectedFiles, setSelectedFiles] = useState();
 
-    this.handleUploadImage = this.handleUploadImage.bind(this);
-  }
+    const handleInputChange = (e) => {
+        setSelectedFiles(e.target.files[0])
 
-  handleUploadImage(ev) {
-    ev.preventDefault();
+    }
 
-    const data = new FormData();
-    data.append('file', this.uploadInput.files[0]);
-    data.append('filename', this.fileName.value);
 
-    fetch('http://0.0.0.0:5000/upload', {
-      method: 'POST',
-      body: data,
-    }).then((response) => {
-      response.json().then((body) => {
-        this.setState({ imageURL: `http://0.0.0.0:5000/${body.file}` });
-      });
-    });
-  }
+    const state = useContext(SessionContext)
+    const fileSubmit = () => {
+        
+        const data = new FormData();
+        data.append('file', selectedFiles)
+        // data.append('headerName', state.session)
+        console.warn(selectedFiles)
+        const id = {
+            id: state.session,
+            data: data
+        }
+
+        axios.post('http://0.0.0.0:5000/upload', data, {
+            headers: {
+                Authorization: state.session,
+                "Content-Type": "application/x-www-form-urlencoded",
+                },
+        })
+        .then((res) => {
+            console.log(data)
+            console.log("RESPONSE ==== : ", res);
+        
+        })
+        .catch((err) => {
+
+            console.log("ERROR: ====", err);
+        })
+    }
+    // const handleUploadImage = (e) => {
     
-    render() {
+    //     const user = {
+    //         id: state.session
+            
+        
+    // };    
+
+    // data.append('file', this.uploadInput.files[0]);
+    // data.append('filename', state.session);
+    // // date.append('header', state.session)
+    
+    // console.log(data)
+    
+    // axios.post('http://0.0.0.0:5000/upload', data, user)
+    // .then((res) => {
+    // console.log("RESPONSE ==== : ", res);
+    // })
+    // .catch((err) => {
+    // console.log("ERROR: ====", err);
+    // })
+    
+    // };
+
+    
         return (
           
-          <form onSubmit={this.handleUploadImage}>
+          
         <div>
-          <input ref={(ref) => { this.uploadInput = ref; }} type="file" />
-        </div>
+          {/* <input ref={(ref) => { uploadInput = ref; }} type="file" /> */}
+          <label className="btn btn-default">
+          <input type="file" className="form-control" name="upload_file" onChange={handleInputChange} />
+      </label>
+        
         <div>
-          <input ref={(ref) => { this.fileName = ref; }} type="text" placeholder="Enter the desired name of file" />
+          {/* <input ref={(ref) => { fileName = ref; }} type="text" placeholder="Enter the desired name of file" /> */}
         </div>
         <br />
         <div>
-          <button>Upload</button>
+          {/* <button>Upload</button> */}
+          <button type="submit" className="btn btn-dark" onClick={()=>fileSubmit()}>Save</button>
         </div>
-        <img src={this.state.imageURL} alt="img" />
-        </form>
+        </div>
+      
         );
-    }
+    
 }
-

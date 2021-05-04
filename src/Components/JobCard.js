@@ -1,9 +1,35 @@
-import React from "react";
+import React,{useEffect, useState, useContext, useProps } from "react";
 import { Box, Typography, Grid, Button, makeStyles } from "@material-ui/core";
+import { SessionProvider, SessionContext} from '../context/SessionContext'
+import axios from "axios";
 
-const skills = ["Javascript", "React.js", "Node.js", "Css", "HTML"];
 
-const useStyles = makeStyles((theme) => ({
+
+export default function JobCard() {
+
+    const state = useContext(SessionContext)
+    const [colorsData, setColorsData] = useState([]);
+    useEffect(() => {
+        axios
+        .get("http://0.0.0.0:5000/getjobs", {
+            headers: {
+                Authorization: state.session,
+                    "Content-Type": "application/x-www-form-urlencoded",
+            },
+        })
+        .then((res) => {
+            console.log(res.data);
+            setColorsData(res.data);
+            
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+    }, []);
+
+    const skills = ["Javascript", "React.js", "Node.js", "Css", "HTML"];
+
+    const useStyles = makeStyles((theme) => ({
 
     wrapper: {
         border: '1px solid #e8e8e8',
@@ -40,14 +66,16 @@ const useStyles = makeStyles((theme) => ({
 
 }))
 
-export default (props) => {
-    const classes = useStyles()
+
+  const classes = useStyles()
   return (
-      <div>
+    <div>
+    {colorsData && colorsData.map((d) => {
+    return (
     <Box p={2} className= { classes.wrapper}>
       <Grid container alignItems="center">
         <Grid item xs>
-          <Typography variant="subtitle1">Frontend Dev</Typography>
+          <Typography variant="subtitle1">{d.jobTitle}</Typography>
           <Typography className={classes.companyName} variant="subtitle1">Google</Typography>
         </Grid>
 
@@ -61,14 +89,16 @@ export default (props) => {
 
         <Grid item container direction="column" alignItems="flex-end" xs>
           <Typography variant="caption">
-            2577 min ago | FullTime | Remote
+            2577 min ago | {d.jobType} | {d.location}
           </Typography>
           <Box mt={2}>
             <Button variant="outlined">Check</Button>
           </Box>
         </Grid>
       </Grid>
-    </Box>
+        </Box>
+        );
+    })}
     </div>
   );
 };

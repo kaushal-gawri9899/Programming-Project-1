@@ -13,12 +13,12 @@ from werkzeug.utils import secure_filename
 from tika import parser
 import json
 
-# from pyresparser import ResumeParser
-# from gensim.summarization.summarizer import summarize
-# from gensim.summarization import keywords# Import the library
-# from pdfminer.high_level import extract_text
-# from sklearn.feature_extraction.text import CountVectorizer
-# from sklearn.metrics.pairwise import cosine_similarity
+from pyresparser import ResumeParser
+from gensim.summarization.summarizer import summarize
+from gensim.summarization import keywords# Import the library
+from pdfminer.high_level import extract_text
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 import docx2txt
 import uuid
 
@@ -44,6 +44,7 @@ cognito_client = boto3.client('cognito-idp', region_name='us-east-1')
 BUCKET_NAME='programming-project-resume'
 
 global stored_email
+global header
 
 
 cognitoRoute = Blueprint('cognitoRoute', __name__)
@@ -89,9 +90,10 @@ def signup():
 @cognitoRoute.route('/auth/login', methods=['GET','POST'])
 def login():
     if request.method == 'POST':
+        global header
         global stored_email
         data = request.get_json()
-        # print(data)
+        print(data)
         user_email = data['email']
         password = data['password']
         # return jsonify({ "userType": "Employer", "idToken": ""})
@@ -114,7 +116,7 @@ def login():
             # print(response['AuthenticationResult'])
             id_token = response['AuthenticationResult']['IdToken']
             # session['idToken'] = response['AuthenticationResult']['IdToken']
-           
+            header = response['AuthenticationResult']['IdToken']
 
         except ClientError as e:
             if e.response['Error']['Code'] == 'UserNotFoundException':
@@ -171,35 +173,45 @@ def postPosting():
         jobType = data['jobType']
         workExperince = data['workExperince']
         sessionId = data['sessionId']
-        # print(sessionId)
+        print(sessionId)
         Id = uuid.uuid4()
-    
+        # email = "test@test.com"
+
+
+        
+        # if jobType == 'a':
+        #     jobType = 'partTime'
+        # else:
+        #     jobType = 'fullTime'
+
+        # print(jobType)
+        # print("here")
         r = requests.post('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/create_job',
             headers={"Authorization": sessionId},
             json= {"Id":str(Id),"jobTitle":jobTitle,"jobDescription":jobDescription,"location":location,"jobType":jobType,
             "workExperince":workExperince})
-       
+        # print(r.json)
 
 
     
 
      
-    # print(r.json())
-  
+    print(r.json())
+    # print(request.get_json()['location'])
 
     return "a"
 
 @cognitoRoute.route('/jobs', methods=['GET','POST'])
 def getJobs():
     headers = request.headers.get('Authorization')
-    # print(headers)
+   
     r = requests.get('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/jobs',
     headers={"Authorization": headers}
     )
-
-   
+    
+    print(type(r))
     data = r.json()
-    # print(data)
+    print(data)
     number_of_elements = int(r.json()['Count'])
     
     jobTitle = []
@@ -207,38 +219,49 @@ def getJobs():
     location = []
     workExperience = []
     jobDescription = []
-    id = []
+    degree = []
+    Id = []
 
     for i in range(number_of_elements):
-        id.append(r.json()['Items'][i]['Id']['S'])
         jobType.append(r.json()['Items'][i]['jobType']['S'])
         location.append(r.json()['Items'][i]['location']['S'])
         jobDescription.append(r.json()['Items'][i]['jobDescription']['S'])
         workExperience.append(r.json()['Items'][i]['workExperince']['S'])
         jobTitle.append(r.json()['Items'][i]['jobTitle']['S'])
+        degree.append(r.json()['Items'][i]['degree']['S'])
+        Id.append(r.json()['Items'][i]['Id']['S'])
+
 
     
 
-    returnedJson  = {"Items":[{"Id": id[0] ,"jobDescription": jobDescription[0], "jobType": jobType[0], "location": location[0], "jobTitle": jobTitle[0], "workExperince"
-                : workExperience[0]}]}
+    returnedJson  = {"Items":[{"jobDescription": jobDescription[0], "jobType": jobType[0], "location": location[0], "jobTitle": jobTitle[0], "workExperince"
+                : workExperience[0], "degree" : degree[0], "Id" : Id[0]}]}
 
     storingJson = returnedJson['Items']
 
     for i in range(number_of_elements):
         if i > 0:
-            updatedJson  = {"Id": id[i] ,"jobDescription": jobDescription[i], "jobType": jobType[i], "location": location[i], "jobTitle": jobTitle[i], "workExperince"
-                    : workExperience[i]}
+            updatedJson  = {"jobDescription": jobDescription[i], "jobType": jobType[i], "location": location[i], "jobTitle": jobTitle[i], "workExperince"
+                    : workExperience[i], "degree" : degree[i], "Id": Id[i]}
             storingJson.append(updatedJson)
     
     finalJson = json.dumps(storingJson)
-    # print(finalJson)
+    print(finalJson)
 
 
     return finalJson
 
-@cognitoRoute.route('/match', methods=['GET','POST'])
+@cognitoRoute.route('/getAlljobs', methods=['GET','POST'])
 def getMatcheddata():
-    return 'nothing'
+    print("ss")
+    headers = request.headers.get('Authorization')
+    dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+    table = dynamodb.Table('Job_Postings')
+    response = table.scan()
+    items = response['Items']
+
+    print(items)
+    return response
 
 @cognitoRoute.route('/experience', methods=['GET','POST'])
 def getExperience():
@@ -248,13 +271,26 @@ def getExperience():
     headers={"Authorization": headers})
     
     data = r.json()
-    # print(data)
+    print(data)
     return 'nothing'
 
 # Need to change Stored Email, Stored Email is Global for now
 @cognitoRoute.route('/upload', methods=['GET','POST'])
 def fileUpload():
+    # data = request.data
+    # print(data)
+
+    # data = request.get_json()
+    # print(data)
     headers = request.headers.get('Authorization')
+
+    print(headers)
+
+    res = requests.get("https://kor6ktyjri.execute-api.us-east-1.amazonaws.com/dev/get_user", 
+        headers={"Authorization": headers })       
+        
+    print(res.json().get('Items', [])[0]['email'])
+    email = res.json().get('Items', [])[0]['email']
 
     target=os.path.join(UPLOAD_FOLDER,'resume_saved')
     
@@ -262,13 +298,13 @@ def fileUpload():
         os.mkdir(target)
     
     file = request.files['file']
-    
+    # print(request.files['filename'])
     if file: 
-        filename = secure_filename(file.filename)
+        filename = secure_filename(email + '.pdf')
         destination="/".join([target, filename])
         file.save(destination)
         session['uploadFilePath']=destination
-        uploaded_file_name = 'resume_saved/' + file.filename
+        uploaded_file_name = 'resume_saved/' + filename
         
         s3_client.upload_file(
                     Bucket = BUCKET_NAME,
@@ -278,18 +314,109 @@ def fileUpload():
 
     
     data = ResumeParser(uploaded_file_name).get_extracted_data()
+    # print(data)
     name = data['name']
     experience = data['total_experience']
-    
-    r = requests.post("https://kor6ktyjri.execute-api.us-east-1.amazonaws.com/dev/resume", 
+    degree = data['degree'][0]
+    email = data['email']
+
+    print(degree)
+    r = requests.post("https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/resume", 
         headers={"Authorization": headers},
-        json= {"email":stored_email,"experience":str(experience),"name":str(name)}) 
+        json= {"degree":str(degree),"experience":str(experience),"name":str(name)}) 
     
    
-    # print(data)
         
     response = " "
     return response
+
+
+@cognitoRoute.route('/getjobs', methods=['GET','POST'])
+def getFilteredJobs():
+    headers = request.headers.get('Authorization')
+
+    res = requests.get("https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/getEmployeeJobs", 
+        headers={"Authorization": headers}) 
+
+    degree = res.json()['Items'][0]['degree']['S']
+    newDegree = degree.replace(' ', '')
+
+    r = requests.get("https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/getFilteredJobs/"+ newDegree, 
+        headers={"Authorization": headers}) 
+
+    number_of_elements = int(r.json()['Count'])
+    
+    jobTitle = []
+    jobType = []
+    location = []
+    workExperience = []
+    jobDescription = []
+    Id = []
+
+    for i in range(number_of_elements):
+        jobType.append(r.json()['Items'][i]['jobType']['S'])
+        location.append(r.json()['Items'][i]['location']['S'])
+        jobDescription.append(r.json()['Items'][i]['jobDescription']['S'])
+        workExperience.append(r.json()['Items'][i]['workExperince']['S'])
+        jobTitle.append(r.json()['Items'][i]['jobTitle']['S'])
+        # degree.append(r.json()['Items'][i]['degree']['S'])
+        Id.append(r.json()['Items'][i]['Id']['S'])
+
+
+    
+
+    returnedJson  = {"Items":[{"jobDescription": jobDescription[0], "jobType": jobType[0], "location": location[0], "jobTitle": jobTitle[0], "workExperince"
+                : workExperience[0],  "Id" : Id[0]}]}
+
+    storingJson = returnedJson['Items']
+
+    for i in range(number_of_elements):
+        if i > 0:
+            updatedJson  = {"jobDescription": jobDescription[i], "jobType": jobType[i], "location": location[i], "jobTitle": jobTitle[i], "workExperince"
+                    : workExperience[i], "Id": Id[i]}
+            storingJson.append(updatedJson)
+    
+    finalJson = json.dumps(storingJson)
+    print(finalJson)
+
+    
+    
+
+
+    return finalJson
+
+
+@cognitoRoute.route('/edit_job_posting', methods=['GET','POST'])
+def editPosting():
+    if request.method == 'POST':
+        data = request.get_json()
+        jobTitle = data['jobTitle']
+        jobDescription = data['jobDescription']
+        location = data['location']
+        jobType = data['jobType']
+        workExperince = data['workExperince']
+        sessionId = data['sessionId']
+        jobId = data['id']
+        final_job_id =  jobId[:-1]
+        # print(jobTitle)
+        
+        # print(sessionId)
+        # Id = uuid.uuid4()
+    
+        r = requests.post('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/editJob',
+            headers={"Authorization": sessionId},
+            json= {"id":final_job_id,"jobTitle":jobTitle,"jobDescription":jobDescription,"location":location,"jobType":jobType,
+            "workExperince":workExperince})
+       
+
+
+    
+
+     
+    print(r.json())
+  
+
+    return "a"
 
 @cognitoRoute.route('/filtered_jobs_id', methods=['GET','POST'])
 def getFilteredJobsId():
@@ -342,35 +469,3 @@ def getFilteredJobsId():
 
 
     return finalJson
-
-@cognitoRoute.route('/edit_job_posting', methods=['GET','POST'])
-def editPosting():
-    if request.method == 'POST':
-        data = request.get_json()
-        jobTitle = data['jobTitle']
-        jobDescription = data['jobDescription']
-        location = data['location']
-        jobType = data['jobType']
-        workExperince = data['workExperince']
-        sessionId = data['sessionId']
-        jobId = data['id']
-        final_job_id =  jobId[:-1]
-        # print(jobTitle)
-        
-        # print(sessionId)
-        # Id = uuid.uuid4()
-    
-        r = requests.post('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/editJob',
-            headers={"Authorization": sessionId},
-            json= {"id":final_job_id,"jobTitle":jobTitle,"jobDescription":jobDescription,"location":location,"jobType":jobType,
-            "workExperince":workExperince})
-       
-
-
-    
-
-     
-    print(r.json())
-  
-
-    return "a"

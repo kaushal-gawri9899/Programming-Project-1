@@ -20,7 +20,7 @@ function App() {
 
             <Route path="/hire" component={Hire}></Route>
             <Route path="/button" component={Button}></Route>
-
+            <Route path="/createPost/:id?mode=edit" component={CreatePost}></Route>
             <Route path="/createPost" component={CreatePost}></Route>
             <Route exact path="/employee" component={EmployeeDashboard}></Route>
             <Route exact path="/resume" component={Resume}></Route>

@@ -1,4 +1,4 @@
-import React, {useState, useContext  } from 'react'
+import React, {useState, useContext, useEffect  } from 'react'
 import Box from '@material-ui/core/Box';
 import SplitPane, { Pane } from 'react-split-pane';
 import 'date-fns';
@@ -24,6 +24,13 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 import { useHistory } from "react-router";
+import ChipInput from 'material-ui-chip-input'
+import {
+    useParams,
+    useLocation
+  } from "react-router-dom";
+  
+
 
 const greenTheme = createMuiTheme({
     palette: {
@@ -109,7 +116,7 @@ function getStepContent(step) {
     }
 }
   
-export default function CreatePost() {
+export default function CreatePost(props) {
     const [page, setPageNumber] = useState(1);
     const [selectedValue, setSelectedValue] = useState('a');
     const state = useContext(SessionContext)
@@ -144,12 +151,39 @@ export default function CreatePost() {
     const handleReset = () => {
         setActiveStep(0);
     };
+    const [chips,setChips] = useState([])
 
+    const onBeforeAdd = (chip) => {
+        return chip.length >= 3
+      }
     
+    const  handleAdd = (chip) => {
+        console.log(chips)
+        setChips(chip);
+    }
+
+
+        
+    const handleDelete  = (deletedChip) => {
+        if (deletedChip !== 'react') {
+          this.setState({
+            chips: this.state.chips.filter((c) => c !== deletedChip)
+          })
+        } else {
+          alert('Why would you delete React?')
+        }
+    }
+    let { id } = useParams();
+    const search = props.location.search; 
+    const params = new URLSearchParams(search);
+    const foo = params.get("mode");
+    console.log(foo)
+
     const handleSubmit = (e) => {
         
         e.preventDefault()
         const userObject = {
+
             jobTitle: jobTitle,
             jobDescription: jobDescription,
             location: location,
@@ -157,10 +191,26 @@ export default function CreatePost() {
             workExperince: workExperince,
             sessionId: state.session
 
+
+        };
+        const editUserObject = {
+
+            jobTitle: jobTitle,
+            jobDescription: jobDescription,
+            location: location,
+            jobType: selectedValue,
+            workExperince: workExperince,
+            sessionId: state.session,
+            id: id
+
+
         };
         console.log(userObject)
-
-        axios.post('http://0.0.0.0:5000/create', userObject)
+        
+        if( id == null){ 
+            console.log(id)
+        
+            axios.post('http://0.0.0.0:5000/create', userObject)
             .then((res) => {
                 console.log(res.data)
                 history.push({
@@ -171,11 +221,71 @@ export default function CreatePost() {
                 });
             }).catch((error) => {
                 console.log(error)
-            });
-        
-
-        
+            });      
+        }  
+        else {
+            axios.post('http://0.0.0.0:5000/edit_job_posting', editUserObject)
+            .then((res) => {
+                console.log(res.data)
+                history.push({
+                    pathname:  "/Hire",
+                    state: {
+                    response: "messageFromServer "
+                    } 
+                });
+            }).catch((error) => {
+                console.log(error)
+            });   
+        }
     }
+   
+    // let query = useQuery();
+    // const name = query.get("mode")
+   
+    // useEffect(() => {
+        
+    //     console.log(id)
+
+    
+    // },[]);
+    useEffect(() => {
+
+        const job_id = {
+            job_id: id,
+            
+        
+        };
+        console.log(id)
+        const headers = {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': state.session
+            }
+            
+        }
+        axios
+        .post("http://0.0.0.0:5000/filtered_jobs_id",{
+            job_id:id,
+            headers: headers
+        })
+        .then((res) => {
+            console.log(res.data.Items);
+            // setColorsData(res.data);
+            setTitle(res.data.Items.jobTitle);
+            setDescription(res.data.Items.jobDescription);
+            setLocation(res.data.Items.location);
+            setSelectedValue(res.data.Items.jobType);
+            setWorkExperince(res.data.Items.workExperince);
+        
+            
+            
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+    }, []);
+
+    
 
     if(activeStep === 0) {
             
@@ -255,7 +365,7 @@ export default function CreatePost() {
                                 <TextField
                                     required
                                     id="outlined-required"
-                                    label="Required"
+                               
                                     value = {jobTitle}
                                     onChange={(e) => setTitle(e.target.value) }
                                     variant="outlined"
@@ -286,13 +396,19 @@ export default function CreatePost() {
                                     <Typography variant="h7">FULL-TIME</Typography>
                                 </Box>
                                 <Box mt={7} ml={5}>
+                                  
                                     <Typography>JOB DESCRIPTION</Typography>
+                                    <ChipInput
+                                    defaultValue={chips}
+                                    onChange={(e) => handleAdd(e)}
+                                    />
+
                                 </Box>
                                 <Box mt={2} ml={5}>
                                 <TextField
                                     required
                                     id="outlined-required"
-                                    label="Required"
+                                   
                                     value = {jobDescription}
                                     onChange={(e) => setDescription(e.target.value) }
                                     multiline
@@ -502,6 +618,7 @@ export default function CreatePost() {
                                    Back
                                  </Button>
                                  <Button 
+                                
                                  onClick={handleSubmit} 
                                  variant="contained" 
                                  color="primary" 
@@ -517,6 +634,7 @@ export default function CreatePost() {
                                    value={1}
                                  > */}
                                    {activeStep === steps.length - 1 ? 'POST JOB' : 'Next'}
+                                   {/* {id !== " " ? 'EDIT JOB' : 'POST JOB' } */}
                                  </Button>
                                  
                                </div>

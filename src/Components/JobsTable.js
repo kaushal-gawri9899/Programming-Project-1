@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useProps } from "react";
+import React, { useEffect, useState, useContext, useProps} from "react";
 import axios from "axios";
 import Link from '@material-ui/core/Link';
 import Table from "@material-ui/core/Table";
@@ -9,11 +9,17 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import { SessionProvider, SessionContext} from '../context/SessionContext'
-
+import TextTruncate from 'react-text-truncate';
+import LinesEllipsis from 'react-lines-ellipsis'
+import Typography from '@material-ui/core/Typography';
+import ChipInput from 'material-ui-chip-input'
+import EditIcon from '@material-ui/icons/Edit';
+import { useHistory } from "react-router-dom";
 
 export default function JobsTable() {
     const state = useContext(SessionContext)
     const [colorsData, setColorsData] = useState([]);
+    const history = useHistory();
     useEffect(() => {
         axios
         .get("http://0.0.0.0:5000/jobs", {
@@ -35,6 +41,20 @@ export default function JobsTable() {
     const handleCellClick = (e) => {
         console.log("Hello");
     }
+    const maxChar = 200
+   
+    const handleClick = (id) => {
+        console.log(id);
+       
+        history.push({
+            pathname:  "/CreatePost/" + id + "?mode=edit",
+        
+          
+            state: {
+            response: "messageFromServer "
+            } 
+        });
+    }
 
     return (
         <TableContainer component={Paper}>
@@ -42,10 +62,11 @@ export default function JobsTable() {
             <TableHead>
             <TableRow>
                 <TableCell>Job Title</TableCell>
-                <TableCell align="right">Location</TableCell>
-                <TableCell align="right">Job Description</TableCell>
-                <TableCell align="right">Experience</TableCell>
-                <TableCell align="right">Job Type</TableCell>
+                <TableCell >Location</TableCell>
+                <TableCell >Job Description</TableCell>
+                <TableCell>Experience</TableCell>
+                <TableCell >Job Type</TableCell>
+                <TableCell >Action</TableCell>
             </TableRow>
             </TableHead>
             <TableBody>
@@ -53,17 +74,20 @@ export default function JobsTable() {
                 colorsData.map((d) => {
                 return (
                     
-                    <TableRow  key={d.jobTitle}>
+                    <TableRow  key={d.Id}>
                    
               
-                    <TableCell style={{backgroundColor:'Navy', color: 'white',}} onClick={handleCellClick} component="th" scope="row">{d.jobTitle}</TableCell>
+                    <TableCell style={{ color: 'blue',}} onClick={handleCellClick} component="th" scope="row">{d.jobTitle}</TableCell>
+                 
+                    <TableCell >{d.location}</TableCell>
+        
+                    <TableCell >{d.jobDescription}</TableCell>
 
-                    <TableCell align="right">{d.location}</TableCell>
                     
-                    <TableCell align="right">{d.jobDescription}</TableCell>
-
-                    <TableCell align="right">{d.workExperince}</TableCell>
-                    <TableCell align="right">{d.jobType}</TableCell>
+                    <TableCell >{d.workExperince}</TableCell>
+                    <TableCell >{d.jobType}</TableCell>
+                    
+                    <TableCell ><EditIcon button onClick={() => handleClick(d.Id)}/></TableCell>
                     </TableRow>
                 );
                 })}

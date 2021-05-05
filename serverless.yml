@@ -34,46 +34,111 @@ functions:
           path: /jobs
           method: get
           authorizer:
-            # type: COGNITO_USER_POOLS
-            # authorizerId:
-            #   Ref: ApiGatewayAuthorizer
+             type: COGNITO_USER_POOLS
+             authorizerId:
+               Ref: ApiGatewayAuthorizer
   create-job:
     handler: main.create_job
     events:
       - http:
           path: /create_job
           method: post
-          # authorizer:
-          #   type: COGNITO_USER_POOLS
-          #   authorizerId:
-          #     Ref: ApiGatewayAuthorizer
-  # delete-booking:
-  #   handler: main.delete_booking
-  #   events:
-  #     - http:
-  #         path: /delete_booking
-  #         method: delete
-  #         authorizer:
-  #           type: COGNITO_USER_POOLS
-  #           authorizerId:
-  #             Ref: ApiGatewayAuthorizer
-  # edit-booking:
-  #   handler: main.update_booking
-  #   events:
-  #     - http:
-  #         path: /edit_booking
-  #         method: post
-  #         authorizer:
-  #           type: COGNITO_USER_POOLS
-  #           authorizerId:
-  #             Ref: ApiGatewayAuthorizer
-  # client-booking:
-  #   handler: main.get_client_bookings
-  #   events:
-  #     - http:
-  #         path: /client_booking
-  #         method: get
-  #         authorizer:
-  #           type: COGNITO_USER_POOLS
-  #           authorizerId:
-  #             Ref: ApiGatewayAuthorizer
+          authorizer:
+             type: COGNITO_USER_POOLS
+             authorizerId:
+               Ref: ApiGatewayAuthorizer
+  resume:
+    handler: main.resume
+    events:
+      - http:
+          path: /resume
+          method: post
+          authorizer:
+             type: COGNITO_USER_POOLS
+             authorizerId:
+               Ref: ApiGatewayAuthorizer
+  get-filtered-jobs:
+    handler: main.get_filtered_jobs
+    events:
+      - http:
+          path: /getFilteredJobs/{degree}
+          method: get
+          request:
+            parameters:
+              paths:
+                degree: true
+          authorizer:
+             type: COGNITO_USER_POOLS
+             authorizerId:
+               Ref: ApiGatewayAuthorizer
+  get-filtered-job-id:
+    handler: main.get_filter_job_id
+    events:
+      - http:
+          path: /getFilterJobs/{id}
+          method: get
+          request:
+            parameters:
+              paths:
+                id: true
+          authorizer:
+             type: COGNITO_USER_POOLS
+             authorizerId:
+               Ref: ApiGatewayAuthorizer
+  edit-job-posting:
+    handler: main.edit_job_posting
+    events:
+      - http:
+          path: /editJob
+          method: post
+          authorizer:
+             type: COGNITO_USER_POOLS
+             authorizerId:
+               Ref: ApiGatewayAuthorizer
+  delete-job-posting:
+    handler: main.delete_job_posting
+    events:
+      - http:
+          path: /deleteJob
+          method: delete
+          authorizer:
+             type: COGNITO_USER_POOLS
+             authorizerId:
+               Ref: ApiGatewayAuthorizer
+  getJobsForEmployee:
+    handler: main.getJobsForEmployee
+    events:
+      - http:
+          path: /getEmployeeJobs
+          method: get
+          authorizer:
+             type: COGNITO_USER_POOLS
+             authorizerId:
+               Ref: ApiGatewayAuthorizer
+  apply-job:
+    handler: main.apply_job
+    events:
+      - http:
+          path: /apply_job
+          method: post
+          authorizer:
+             type: COGNITO_USER_POOLS
+             authorizerId:
+               Ref: ApiGatewayAuthorizer
+  get-applicants-for-a-job:
+    handler: main.get_applicants_for_job
+    events:
+      - http:
+          path: /getApplicantJobs/{id}
+          method: get
+          request:
+            parameters:
+              paths:
+                id: true
+          authorizer:
+             type: COGNITO_USER_POOLS
+             authorizerId:
+               Ref: ApiGatewayAuthorizer
+                       
+               
+    

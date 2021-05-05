@@ -469,3 +469,63 @@ def getFilteredJobsId():
 
 
     return finalJson
+
+@cognitoRoute.route('/applyjob', methods=['GET','POST'])
+def applyForJob():
+    data = request.get_json()
+
+    jobId = data['job_id']
+    headers  = data['headers']['headers']['Authorization']
+    
+    res = requests.get("https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/getEmployeeJobs", 
+        headers={"Authorization": headers}) 
+
+    name = res.json()['Items'][0]['name']['S']
+    experience = res.json()['Items'][0]['experience']['S']
+
+    responseForEmail = requests.get("https://kor6ktyjri.execute-api.us-east-1.amazonaws.com/dev/get_user", 
+        headers={"Authorization": headers })       
+        
+    email = responseForEmail.json().get('Items', [])[0]['email']
+    newEmail = email.replace('@','') + '.pdf'
+
+    print(newEmail)
+
+
+    responeForDes = requests.get('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/getFilterJobs/' + jobId,
+    headers={"Authorization": headers}
+    )
+
+    jobDescription = responeForDes.json()['Items'][0]['jobDescription']['S']
+    # print(jobDescription)
+
+    resume = extract_text('resume_saved/' + newEmail)
+    text_resume = str(resume)
+    summarized_resume = summarize(text_resume, ratio=0.5)
+    # print(summarized_resume)
+
+    text = jobDescription
+    text = str(text)
+    summarize(text, ratio=0.5) 
+
+    text_list = [text_resume, text]
+
+    cv = CountVectorizer()
+    count_matrix = cv.fit_transform(text_list)
+
+    matchPercentage = cosine_similarity(count_matrix)[0][1] * 100
+    matchPercentage = round(matchPercentage, 2)
+    print(matchPercentage)
+
+    r = requests.post('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/apply_job',
+            headers={"Authorization": headers},
+            json= {"Id":jobId,"name":name,"workExperince":experience,"matchingPercentage":str(matchPercentage)})
+    
+    #https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/getApplicantJobs/{id}
+
+    # check = requests.get('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/getApplicantJobs/' + jobId,
+    # headers={"Authorization": headers}
+    # )
+    # print(check.json())
+
+    return "a"

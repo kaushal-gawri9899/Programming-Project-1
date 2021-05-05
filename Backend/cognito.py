@@ -314,13 +314,15 @@ def fileUpload():
 
     
     data = ResumeParser(uploaded_file_name).get_extracted_data()
-    # print(data)
+
+    print(data)
     name = data['name']
     experience = data['total_experience']
     degree = data['degree'][0]
+    # print(degree)
     email = data['email']
 
-    print(degree)
+    # print(degree)
     r = requests.post("https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/resume", 
         headers={"Authorization": headers},
         json= {"degree":str(degree),"experience":str(experience),"name":str(name)}) 
@@ -501,12 +503,12 @@ def applyForJob():
 
     resume = extract_text('resume_saved/' + newEmail)
     text_resume = str(resume)
-    summarized_resume = summarize(text_resume, ratio=0.5)
+    summarized_resume = summarize(text_resume, ratio=0.8)
     # print(summarized_resume)
 
     text = jobDescription
     text = str(text)
-    summarize(text, ratio=0.5) 
+    summarize(text, ratio=0.8) 
 
     text_list = [text_resume, text]
 
@@ -528,4 +530,4 @@ def applyForJob():
     # )
     # print(check.json())
 
-    return "a"
+    return jobId

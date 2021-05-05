@@ -31,90 +31,73 @@ export default function JobCard() {
 
     const useStyles = makeStyles((theme) => ({
 
-    wrapper: {
-        border: '1px solid #e8e8e8',
-        cursor: "pointer",
-        transition: '0.3s',
+		wrapper: {
+			border: '1px solid #e8e8e8',
+			cursor: "pointer",
+			transition: '0.3s',
 
-        "&:hover": {
-            boxShadow: "0px 5px 25px rgba(0, 0, 0, 0.1)",
-            borderLeft: "6px solid #4D64E4",
-        }
-    },
+			"&:hover": {
+				boxShadow: "0px 5px 25px rgba(0, 0, 0, 0.1)",
+				borderLeft: "6px solid #4D64E4",
+			}
+		},
 
-    companyName: {
-        fontSize: "13.5px",
-        backgroundColor: "#000000",
-        padding: theme.spacing(0.75),
-        borderRadius: "5px",
-        display: "inline-block",
-        fontWeight: 600,
-        color: "#fff",
-    },
+		companyName: {
+			fontSize: "13.5px",
+			backgroundColor: "#000000",
+			padding: theme.spacing(0.75),
+			borderRadius: "5px",
+			display: "inline-block",
+			fontWeight: 600,
+			color: "#fff",
+		},
 
-    skillChip: {
-        margin: theme.spacing(0.5),
-        padding: theme.spacing(0.75),
-        fontSize: "14.5px",
-        borderRadius: "5px",
-        // transition: "0.3s",
-        cursor: "pointer",
-        fontWeight: 600,
-        backgroundColor: "#FF0000",        
-        color: "#fff",
-    }
+		skillChip: {
+			margin: theme.spacing(0.5),
+			padding: theme.spacing(0.75),
+			fontSize: "14.5px",
+			borderRadius: "5px",
+			// transition: "0.3s",
+			cursor: "pointer",
+			fontWeight: 600,
+			backgroundColor: "#FF0000",        
+			color: "#fff",
+		}
 
-}))
+	}))
 
-const handleClick = (id) => {
-  console.log(id);
+	const [action,setAction] = useState('Apply')
+	
+
+	const handleClick = (id) => {
 
 
-  const job_id = {
-    job_id: id,
-    
+		const job_id = {
+			job_id: id,
+		};
+	
+		console.log(id)
+		const headers = {
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				'Authorization': state.session
+			}
+		
+		}
 
-};
-console.log(id)
-const headers = {
-    headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': state.session
-    }
-    
-}
-
-  axios
-        .post("http://0.0.0.0:5000/applyjob",{
-            job_id:id,
-            headers: headers
-        })
-        .then((res) => {
-            console.log()
-            
-        })
-        .catch((err) => {
-            console.log(err);
-        });
-
-  // axios.post('http://0.0.0.0:5000/applyjob', sendID, {
-  //           headers: {
-  //               Authorization: state.session,
-  //               "Content-Type": "application/x-www-form-urlencoded",
-  //               },
-  //       })
-  //       .then((res) => {
-  //           console.log(sendID)
-  //           console.log("RESPONSE ==== : ", res);
-        
-  //       })
-  //       .catch((err) => {
-
-  //           console.log("ERROR: ====", err);
-  //       })
-
-  
-}
+		axios.post("http://0.0.0.0:5000/applyjob",{
+				job_id:id,
+				headers: headers
+			}).then((res) => {
+				console.log(res)
+				// action = res.data
+				
+				setAction(res.data)
+				
+			}).catch((err) => {
+				console.log(err);
+			});
+	}
 
 
   const classes = useStyles()
@@ -122,7 +105,8 @@ const headers = {
     <div>
     {colorsData && colorsData.map((d) => {
     return (
-    <Box p={2} className= { classes.wrapper}>
+	<div key={d.Id}>
+    <Box p={2} className= { classes.wrapper} >
       <Grid container alignItems="center">
         <Grid item xs>
           <Typography variant="subtitle1">{d.jobTitle}</Typography>
@@ -139,14 +123,15 @@ const headers = {
 
         <Grid item container direction="column" alignItems="flex-end" xs>
           <Typography variant="caption">
-            2577 min ago | {d.jobType} | {d.location}
+             {d.jobType} | {d.location}
           </Typography>
           <Box mt={2}>
-            <Button onClick={() => handleClick(d.Id)} variant="outlined">Apply</Button>
+            <Button onClick={() => handleClick(d.Id)} disabled={d.Id === action ? true : false} variant="outlined">{d.Id === action ? "Applied" : "Apply"}</Button>
           </Box>
         </Grid>
       </Grid>
         </Box>
+		</div>
         );
     })}
     </div>

@@ -14,6 +14,7 @@ import LinesEllipsis from 'react-lines-ellipsis'
 import Typography from '@material-ui/core/Typography';
 import ChipInput from 'material-ui-chip-input'
 import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 import { useHistory } from "react-router-dom";
 
 export default function JobsTable() {
@@ -56,6 +57,31 @@ export default function JobsTable() {
         });
     }
 
+    const handleDelete = (id) => {
+        console.log(id)
+        const currentJobs = colorsData;
+        setColorsData(currentJobs.filter(d => d.Id !== id))
+        // this.setState({
+        //     circuits: currentCircuits.filter(circuit => circuit.id !== circuitID),
+        //   });
+        const deleteJob = {
+            id: id,
+            sessionId: state.session
+        }
+        axios.delete("http://0.0.0.0:5000/delete_job",{
+            data: deleteJob})
+        .then((res) => {
+            console.log(res)
+            // setColorsData(colorsData);
+            // useEffect();
+         
+        }).catch((error) => {
+            console.log(error)
+        });   
+    }
+    
+    
+
     return (
         <TableContainer component={Paper}>
         <Table aria-label="simple table">
@@ -87,7 +113,8 @@ export default function JobsTable() {
                     <TableCell >{d.workExperince}</TableCell>
                     <TableCell >{d.jobType}</TableCell>
                     
-                    <TableCell ><EditIcon button onClick={() => handleClick(d.Id)}/></TableCell>
+                    <TableCell ><EditIcon button onClick={() => handleClick(d.Id)}/> <DeleteIcon button onClick={() => handleDelete(d.Id)}/></TableCell>
+                    {/* <TableCell ><DeleteIcon button onClick={() => handleClick(d.Id)}/></TableCell> */}
                     </TableRow>
                 );
                 })}

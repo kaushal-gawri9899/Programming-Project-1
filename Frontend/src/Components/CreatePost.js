@@ -29,6 +29,7 @@ import {
     useParams,
     useLocation
   } from "react-router-dom";
+import _, { map } from 'underscore';
   
 
 
@@ -123,6 +124,7 @@ export default function CreatePost(props) {
     const [jobTitle, setTitle] = useState();
     const [jobDescription, setDescription] = useState();
     const [location, setLocation] = useState();
+    const [companyName, setCompanyName] = useState();
     const [workExperince, setWorkExperince] = useState();
     let jobSelectedType = " ";
 
@@ -153,26 +155,19 @@ export default function CreatePost(props) {
     };
     const [chips,setChips] = useState([])
 
-    const onBeforeAdd = (chip) => {
-        return chip.length >= 3
-      }
-    
-    const  handleAdd = (chip) => {
+
+    const handleAddChip = (chip) => {
+        setChips([...chips,chip])
         console.log(chips)
-        setChips(chip);
     }
+    // Delete Chips
+    const handleDeleteChip = (chip) => {
+        setChips(_.without(chips,chip))
+       
+      }
 
 
-        
-    const handleDelete  = (deletedChip) => {
-        if (deletedChip !== 'react') {
-          this.setState({
-            chips: this.state.chips.filter((c) => c !== deletedChip)
-          })
-        } else {
-          alert('Why would you delete React?')
-        }
-    }
+
     let { id } = useParams();
     const search = props.location.search; 
     const params = new URLSearchParams(search);
@@ -180,8 +175,9 @@ export default function CreatePost(props) {
     console.log(foo)
 
     const handleSubmit = (e) => {
-        
+       
         e.preventDefault()
+      
         const userObject = {
 
             jobTitle: jobTitle,
@@ -189,7 +185,9 @@ export default function CreatePost(props) {
             location: location,
             jobType: selectedValue,
             workExperince: workExperince,
-            sessionId: state.session
+            sessionId: state.session,
+            companyName: companyName,
+            chips: chips[0]
 
 
         };
@@ -201,6 +199,7 @@ export default function CreatePost(props) {
             jobType: selectedValue,
             workExperince: workExperince,
             sessionId: state.session,
+            companyName: companyName,
             id: id
 
 
@@ -276,6 +275,8 @@ export default function CreatePost(props) {
             setLocation(res.data.Items.location);
             setSelectedValue(res.data.Items.jobType);
             setWorkExperince(res.data.Items.workExperince);
+            setCompanyName(res.data.Items.companyName)
+            setChips([...chips,res.data.Items.degree])
         
             
             
@@ -359,6 +360,21 @@ export default function CreatePost(props) {
                                 
                                 /></Box>
                                 <Box mt={4} ml={5}>
+                                    <Typography variant="h7">COMPANY NAME </Typography>
+                                </Box>
+                                <Box mt={2} ml={5}>
+                                <TextField
+                                    required
+                                    id="outlined-required"
+                               
+                                    value = {companyName}
+                                    onChange={(e) => setCompanyName(e.target.value) }
+                                    variant="outlined"
+                                    style = {{width: 500}}
+                                    />
+                                </Box>
+            
+                                <Box mt={4} ml={5}>
                                     <Typography variant="h7">JOB TITLE</Typography>
                                 </Box>
                                 <Box mt={2} ml={5}>
@@ -396,12 +412,18 @@ export default function CreatePost(props) {
                                     <Typography variant="h7">FULL-TIME</Typography>
                                 </Box>
                                 <Box mt={7} ml={5}>
+                                <ChipInput
+                                    label="Video Tags"
+                                    value={chips}
+                                    onAdd={(chip) => handleAddChip(chip)}
+                                    onDelete={(chip) => handleDeleteChip(chip)}
+                                />
+                                </Box>
+                               
+                                <Box mt={7} ml={5}>
                                   
                                     <Typography>JOB DESCRIPTION</Typography>
-                                    <ChipInput
-                                    defaultValue={chips}
-                                    onChange={(e) => handleAdd(e)}
-                                    />
+                                    
 
                                 </Box>
                                 <Box mt={2} ml={5}>

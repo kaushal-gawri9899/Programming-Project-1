@@ -13,12 +13,12 @@ from werkzeug.utils import secure_filename
 from tika import parser
 import json
 
-from pyresparser import ResumeParser
-from gensim.summarization.summarizer import summarize
-from gensim.summarization import keywords# Import the library
-from pdfminer.high_level import extract_text
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+# from pyresparser import ResumeParser
+# from gensim.summarization.summarizer import summarize
+# from gensim.summarization import keywords# Import the library
+# from pdfminer.high_level import extract_text
+# from sklearn.feature_extraction.text import CountVectorizer
+# from sklearn.metrics.pairwise import cosine_similarity
 import docx2txt
 import uuid
 
@@ -168,12 +168,15 @@ def postPosting():
     if request.method == 'POST':
         data = request.get_json()
         jobTitle = data['jobTitle']
+        companyName = data['companyName']
         jobDescription = data['jobDescription']
         location = data['location']
         jobType = data['jobType']
         workExperince = data['workExperince']
         sessionId = data['sessionId']
         print(sessionId)
+        degree = data['chips']
+        print(degree)
         Id = uuid.uuid4()
         # email = "test@test.com"
 
@@ -189,7 +192,7 @@ def postPosting():
         r = requests.post('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/create_job',
             headers={"Authorization": sessionId},
             json= {"Id":str(Id),"jobTitle":jobTitle,"jobDescription":jobDescription,"location":location,"jobType":jobType,
-            "workExperince":workExperince})
+            "workExperince":workExperince,"degree":"Degreeof"+degree,"companyName":companyName})
         # print(r.json)
 
 
@@ -209,9 +212,9 @@ def getJobs():
     headers={"Authorization": headers}
     )
     
-    print(type(r))
-    data = r.json()
-    print(data)
+    # print(type(r))
+    # data = r.json()
+    # print(data)
     number_of_elements = int(r.json()['Count'])
     
     jobTitle = []
@@ -246,21 +249,21 @@ def getJobs():
             storingJson.append(updatedJson)
     
     finalJson = json.dumps(storingJson)
-    print(finalJson)
+    # print(finalJson)
 
 
     return finalJson
 
 @cognitoRoute.route('/getAlljobs', methods=['GET','POST'])
 def getMatcheddata():
-    print("ss")
+    # print("ss")
     headers = request.headers.get('Authorization')
     dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
     table = dynamodb.Table('Job_Postings')
     response = table.scan()
     items = response['Items']
 
-    print(items)
+    # print(items)
     return response
 
 @cognitoRoute.route('/experience', methods=['GET','POST'])
@@ -354,7 +357,8 @@ def getFilteredJobs():
     workExperience = []
     jobDescription = []
     Id = []
-
+    companyName = []
+    print(r.json())
     for i in range(number_of_elements):
         jobType.append(r.json()['Items'][i]['jobType']['S'])
         location.append(r.json()['Items'][i]['location']['S'])
@@ -363,19 +367,20 @@ def getFilteredJobs():
         jobTitle.append(r.json()['Items'][i]['jobTitle']['S'])
         # degree.append(r.json()['Items'][i]['degree']['S'])
         Id.append(r.json()['Items'][i]['Id']['S'])
+        companyName.append(r.json()['Items'][i]['companyName']['S'])
 
 
     
 
     returnedJson  = {"Items":[{"jobDescription": jobDescription[0], "jobType": jobType[0], "location": location[0], "jobTitle": jobTitle[0], "workExperince"
-                : workExperience[0],  "Id" : Id[0]}]}
+                : workExperience[0],  "Id" : Id[0], "companyName": companyName[0]}]}
 
     storingJson = returnedJson['Items']
 
     for i in range(number_of_elements):
         if i > 0:
             updatedJson  = {"jobDescription": jobDescription[i], "jobType": jobType[i], "location": location[i], "jobTitle": jobTitle[i], "workExperince"
-                    : workExperience[i], "Id": Id[i]}
+                    : workExperience[i], "Id": Id[i], "companyName": companyName[i]}
             storingJson.append(updatedJson)
     
     finalJson = json.dumps(storingJson)
@@ -399,6 +404,7 @@ def editPosting():
         workExperince = data['workExperince']
         sessionId = data['sessionId']
         jobId = data['id']
+        companyName = data['companyName']
         final_job_id =  jobId[:-1]
         # print(jobTitle)
         
@@ -408,7 +414,7 @@ def editPosting():
         r = requests.post('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/editJob',
             headers={"Authorization": sessionId},
             json= {"id":final_job_id,"jobTitle":jobTitle,"jobDescription":jobDescription,"location":location,"jobType":jobType,
-            "workExperince":workExperince})
+            "workExperince":workExperince,"companyName":companyName})
        
 
 
@@ -444,6 +450,8 @@ def getFilteredJobsId():
     workExperience = []
     jobDescription = []
     id = []
+    companyName = []
+    degree = []
 
     for i in range(number_of_elements):
         id.append(r.json()['Items'][i]['Id']['S'])
@@ -452,11 +460,14 @@ def getFilteredJobsId():
         jobDescription.append(r.json()['Items'][i]['jobDescription']['S'])
         workExperience.append(r.json()['Items'][i]['workExperince']['S'])
         jobTitle.append(r.json()['Items'][i]['jobTitle']['S'])
+        companyName.append(r.json()['Items'][i]['companyName']['S'])
+        # degree.append(r.json()['Items'][i]['degree']['S'])
+
 
     
 
     returnedJson  = {"Items":{"Id": id[0] ,"jobDescription": jobDescription[0], "jobType": jobType[0], "location": location[0], "jobTitle": jobTitle[0], "workExperince"
-                : workExperience[0]}}
+                : workExperience[0], "companyName":companyName[0], "degree":"ComputerScience"}}
 
     # storingJson = returnedJson['Items']
 
@@ -531,3 +542,18 @@ def applyForJob():
     # print(check.json())
 
     return jobId
+
+@cognitoRoute.route('/delete_job', methods=['POST','GET','DELETE'])
+def delete():
+    if request.method == 'DELETE':
+        print('please_print')
+        data = request.get_json()
+        sessionId = data['sessionId']
+        jobId = data['id']
+        print(jobId)
+        # table = dynamodb.Table('Bookings')
+        r = requests.delete('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/deleteJob',
+            headers={"Authorization": sessionId}, json= {"id":jobId})
+        print(r.json)
+        # return redirect(url_for('cognitoRoute.admin_home'))
+    return "d"

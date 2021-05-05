@@ -1,0 +1,154 @@
+import React,{useEffect, useState, useContext, useProps } from "react";
+import { Box, Typography, Grid, Button, makeStyles } from "@material-ui/core";
+import { SessionProvider, SessionContext} from '../context/SessionContext'
+import axios from "axios";
+import { useHistory } from "react-router-dom";
+
+
+export default function JobCard() {
+
+    const state = useContext(SessionContext)
+    const [colorsData, setColorsData] = useState([]);
+    useEffect(() => {
+        axios
+        .get("http://0.0.0.0:5000/getjobs", {
+            headers: {
+                Authorization: state.session,
+                    "Content-Type": "application/x-www-form-urlencoded",
+            },
+        })
+        .then((res) => {
+            console.log(res.data);
+            setColorsData(res.data);
+            
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+    }, []);
+
+    const skills = ["Javascript", "React.js", "Node.js", "Css", "HTML"];
+
+    const useStyles = makeStyles((theme) => ({
+
+    wrapper: {
+        border: '1px solid #e8e8e8',
+        cursor: "pointer",
+        transition: '0.3s',
+
+        "&:hover": {
+            boxShadow: "0px 5px 25px rgba(0, 0, 0, 0.1)",
+            borderLeft: "6px solid #4D64E4",
+        }
+    },
+
+    companyName: {
+        fontSize: "13.5px",
+        backgroundColor: "#000000",
+        padding: theme.spacing(0.75),
+        borderRadius: "5px",
+        display: "inline-block",
+        fontWeight: 600,
+        color: "#fff",
+    },
+
+    skillChip: {
+        margin: theme.spacing(0.5),
+        padding: theme.spacing(0.75),
+        fontSize: "14.5px",
+        borderRadius: "5px",
+        // transition: "0.3s",
+        cursor: "pointer",
+        fontWeight: 600,
+        backgroundColor: "#FF0000",        
+        color: "#fff",
+    }
+
+}))
+
+const handleClick = (id) => {
+  console.log(id);
+
+
+  const job_id = {
+    job_id: id,
+    
+
+};
+console.log(id)
+const headers = {
+    headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': state.session
+    }
+    
+}
+
+  axios
+        .post("http://0.0.0.0:5000/applyjob",{
+            job_id:id,
+            headers: headers
+        })
+        .then((res) => {
+            console.log()
+            
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+
+  // axios.post('http://0.0.0.0:5000/applyjob', sendID, {
+  //           headers: {
+  //               Authorization: state.session,
+  //               "Content-Type": "application/x-www-form-urlencoded",
+  //               },
+  //       })
+  //       .then((res) => {
+  //           console.log(sendID)
+  //           console.log("RESPONSE ==== : ", res);
+        
+  //       })
+  //       .catch((err) => {
+
+  //           console.log("ERROR: ====", err);
+  //       })
+
+  
+}
+
+
+  const classes = useStyles()
+  return (
+    <div>
+    {colorsData && colorsData.map((d) => {
+    return (
+    <Box p={2} className= { classes.wrapper}>
+      <Grid container alignItems="center">
+        <Grid item xs>
+          <Typography variant="subtitle1">{d.jobTitle}</Typography>
+          <Typography className={classes.companyName} variant="subtitle1">Google</Typography>
+        </Grid>
+
+        <Grid item container xs>
+          {skills.map((skill) => (
+            <Grid key={skill} item className= {classes.skillChip}>
+              {skill}
+            </Grid>
+          ))}
+        </Grid>
+
+        <Grid item container direction="column" alignItems="flex-end" xs>
+          <Typography variant="caption">
+            2577 min ago | {d.jobType} | {d.location}
+          </Typography>
+          <Box mt={2}>
+            <Button onClick={() => handleClick(d.Id)} variant="outlined">Apply</Button>
+          </Box>
+        </Grid>
+      </Grid>
+        </Box>
+        );
+    })}
+    </div>
+  );
+};

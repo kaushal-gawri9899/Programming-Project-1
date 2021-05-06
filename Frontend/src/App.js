@@ -8,6 +8,7 @@ import SignIn from './Components/SignIn'
 import SignUp from './Components/Signup'
 import EmployeeDashboard from './Components/EmployeeDashboard'
 import Resume from './Components/Resume'
+import EmployerDashboard from './Components/EmployerDashboard'
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
             <Route path="/createPost/:id?mode=edit" component={CreatePost}></Route>
             <Route path="/createPost" component={CreatePost}></Route>
             <Route exact path="/employee" component={EmployeeDashboard}></Route>
+            <Route  path="/employerDashboard" component={EmployerDashboard}></Route>
             <Route exact path="/resume" component={Resume}></Route>
 
           </Switch>

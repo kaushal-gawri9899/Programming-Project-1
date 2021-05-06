@@ -10,6 +10,8 @@ import botocore
 from cognito import cognitoRoute
 from s3 import s3Route
 from flask_cors import CORS
+from jobs import jobsRoute
+from applicants import applicantsRoute
 
 
 
@@ -21,6 +23,8 @@ APP_CLIENT_ID = "1rfl5n6j4su0mgmgkfh43fqbov"
 app.secret_key = 'super secret key'
 app.register_blueprint(cognitoRoute)
 app.register_blueprint(s3Route)
+app.register_blueprint(jobsRoute)
+app.register_blueprint(applicantsRoute)
 
 
 if __name__ == '__main__':

@@ -12,21 +12,22 @@ import requests
 from werkzeug.utils import secure_filename
 from tika import parser
 import json
-
-# from pyresparser import ResumeParser
-# from gensim.summarization.summarizer import summarize
-# from gensim.summarization import keywords# Import the library
-# from pdfminer.high_level import extract_text
-# from sklearn.feature_extraction.text import CountVectorizer
-# from sklearn.metrics.pairwise import cosine_similarity
+from pathlib import Path
+from pyresparser import ResumeParser
+from gensim.summarization.summarizer import summarize
+from gensim.summarization import keywords# Import the library
+from pdfminer.high_level import extract_text
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 import docx2txt
 import uuid
+from os.path import join as pjoin
 
 
 s3_client = boto3.client('s3', region_name='us-east-1')
 
 BUCKET_NAME='programming-project-resume'
-
+s3 = boto3.resource('s3')
 s3Route = Blueprint('s3Route', __name__)
 
 UPLOAD_FOLDER = ''
@@ -570,4 +571,27 @@ def fileUpload():
 
 #         return finalJson
 #     return "None"
+
+@cognitoRoute.route('/downloadResume', methods=['GET','POST'])
+def downloadResume():
+    data = request.get_json()
+    print(data)
+    email = data['user_email']
+    newEmail = email.replace("@","")
+    fileName = newEmail + ".pdf"
+    print(fileName)
+    try:
+        s3.Bucket(BUCKET_NAME).download_file(fileName, fileName)
+    except botocore.exceptions.ClientError as e:
+        if e.response['Error']['Code'] == "404":
+            print("The object does not exist.")
+        else:
+            raise
+    
+    
+    path_to_download_folder = str(os.path.join(Path.home(), "Downloads"))
+    path_to_file = pjoin(path_to_download_folder, fileName)
+    FILE = open(path_to_file, "w")
+    
+    return "None"
 

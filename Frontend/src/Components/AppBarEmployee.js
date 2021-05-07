@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -11,6 +11,8 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
+import { useHistory } from "react-router-dom";
+import {SessionContext, SessionProvider} from '../context/SessionContext'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -45,12 +47,25 @@ const useStyles = makeStyles((theme) => ({
 
 export function AppBarEmployee() {
     
+  const history = useHistory();
+  const state = useContext(SessionContext)
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+  const handleLogout = e => {
+    
+    history.push({
+      pathname:  "/",
+      state: {
+      response: "messageFromServer "
+      } 
+  });
+  state.setSession('');
+  }
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -82,7 +97,7 @@ export function AppBarEmployee() {
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
+      <MenuItem onClick={handleLogout}>Logout</MenuItem>
 
     </Menu>
   );

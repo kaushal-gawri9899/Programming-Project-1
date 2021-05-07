@@ -12,12 +12,14 @@ from werkzeug.utils import secure_filename
 import json
 import docx2txt
 import uuid
+from pyresparser import ResumeParser
 
 app = Flask(__name__)
 APP_CLIENT_ID = "1rfl5n6j4su0mgmgkfh43fqbov"
-
-
+s3_client = boto3.client('s3', region_name='us-east-1')
+UPLOAD_FOLDER = ''
 applicantsRoute = Blueprint('applicantsRoute', __name__)
+BUCKET_NAME='programming-project-resume'
 
 
 @applicantsRoute.route('/applyjob', methods=['GET','POST'])
@@ -77,44 +79,107 @@ def applyForJob():
 @applicantsRoute.route('/get_applicant', methods=['POST','GET'])
 def get_applicants():
 
-    if request.method == 'GET':
+    if request.method == 'POST':
+        data = request.get_json()
+        jobId = data['job_id']
+        headers  = data['headers']['headers']['Authorization']
+        final_job_id =  jobId[:-1]
 
-        headers = request.headers.get('Authorization')
-        r = requests.get('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/getApplicantJobs/25e3cf29-c384-428f-9534-4ab008183296',
+        print(headers)
+
+        r = requests.get('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/getApplicantJobs/' + final_job_id,
             headers={"Authorization": headers}
         )
-     
+
+        print(r.json())
+
         number_of_elements = int(r.json()['Count'])
         
-        name = []
-        email = []
-        matchPercentage = []
-        experience = []
-       
-
-        for i in range(number_of_elements):
-            
-            name.append(r.json()['Items'][i]['name']['S'])
-            email.append(r.json()['Items'][i]['email']['S'])
-            matchPercentage.append(r.json()['Items'][i]['matchingPercentage']['S'])
-            experience.append(r.json()['Items'][i]['experience']['S'])
+        if number_of_elements > 0: 
+            name = []
+            email = []
+            matchPercentage = []
+            experience = []
         
 
-        returnedJson  = {"Items":[{"name": name[0], "email": email[0], "matchingPercentage": matchPercentage[0],
-         "experience": experience[0]}]}
+            for i in range(number_of_elements):
+                
+                name.append(r.json()['Items'][i]['name']['S'])
+                email.append(r.json()['Items'][i]['email']['S'])
+                matchPercentage.append(r.json()['Items'][i]['matchingPercentage']['S'])
+                experience.append(r.json()['Items'][i]['experience']['S'])
+            
 
-        storingJson = returnedJson['Items']
+            returnedJson  = {"Items":[{"name": name[0], "email": email[0], "matchingPercentage": matchPercentage[0],
+            "experience": experience[0]}]}
 
-        for i in range(number_of_elements):
-            if i > 0:
-                updatedJson  = {"Items":[{"name": name[i], "email": email[i], "matchingPercentage": matchPercentage[i],
-                    "experience": experience[i]}]}
-                storingJson.append(updatedJson)
+            storingJson = returnedJson['Items']
+
+            for i in range(number_of_elements):
+                if i > 0:
+                    updatedJson  = {"Items":[{"name": name[i], "email": email[i], "matchingPercentage": matchPercentage[i],
+                        "experience": experience[i]}]}
+                    storingJson.append(updatedJson)
+        
+            finalJson = json.dumps(storingJson)
+            print(finalJson)
     
-        finalJson = json.dumps(storingJson)
-        print(finalJson)
+
+
+            return finalJson
+        else: 
+            return "None"
+    return "None"
+
+@applicantsRoute.route('/upload', methods=['GET','POST'])
+def fileUpload():
+  
+    headers = request.headers.get('Authorization')
+
+    print(headers)
+
+    res = requests.get("https://kor6ktyjri.execute-api.us-east-1.amazonaws.com/dev/get_user", 
+        headers={"Authorization": headers })       
+        
+    print(res.json().get('Items', [])[0]['email'])
+    email = res.json().get('Items', [])[0]['email']
+
+    target=os.path.join(UPLOAD_FOLDER,'resume_saved')
+    
+    if not os.path.isdir(target):
+        os.mkdir(target)
+    
+    file = request.files['file']
+  
+    if file: 
+        filename = secure_filename(email + '.pdf')
+        destination="/".join([target, filename])
+        file.save(destination)
+        session['uploadFilePath']=destination
+        uploaded_file_name = 'resume_saved/' + filename
+        
+        s3_client.upload_file(
+                    Bucket = BUCKET_NAME,
+                    Filename = uploaded_file_name,
+                    Key = filename
+                )
+
+    
+    data = ResumeParser(uploaded_file_name).get_extracted_data()
+
+    print(data)
+    name = data['name']
+    experience = data['total_experience']
+    degree = data['degree'][0]
    
 
-
-        return finalJson
-    return "None"
+   
+    r = requests.post("https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/resume", 
+        headers={"Authorization": headers},
+        json= {"degree":str(degree),"experience":str(experience),"name":str(name)}) 
+    
+   
+        
+    response = " "
+    print("Upload Sucessful")
+    return response

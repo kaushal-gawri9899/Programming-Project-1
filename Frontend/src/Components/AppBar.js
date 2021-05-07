@@ -146,7 +146,7 @@ export function MyAppBar() {
               </Badge>
             </IconButton>
             <Box m={2}>
-                <Button color="inherit" href="EmployerDashboard">
+                <Button color="inherit" href="hire">
                     Dashboard
                 </Button>
             </Box>

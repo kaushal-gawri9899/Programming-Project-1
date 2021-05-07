@@ -18,27 +18,74 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { useHistory } from "react-router-dom";
 import {MyAppBar} from './AppBar';
 import JobsTable from "./JobsTable";
+import {
+    useParams,
+    useLocation
+  } from "react-router-dom";
+import GetAppIcon from '@material-ui/icons/GetApp';
 
 export default function EmployerDashboard(props) {
     const state = useContext(SessionContext)
     const [applicants, setApplicants] = useState([]);
     const history = useHistory();
 
+    
+    let { id } = useParams();
     const search = props.location.search; 
     const params = new URLSearchParams(search);
+    const foo = params.get("mode");
+    console.log(id)
+
+    
+
+    const sendId = {
+        thisId: id
+    }
+
+    const headers = {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': state.session
+        }
+        
+    }
+
+    const handleClickForDownloadResume = (email) => {
+
+	
+		console.log(email)
+		const headers = {
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				'Authorization': state.session
+			}
+		
+		}
+
+		axios.post("http://0.0.0.0:5000/downloadResume",{
+				user_email:email,
+				headers: headers
+			}).then((res) => {
+				console.log(res)				
+				
+			}).catch((err) => {
+				console.log(err);
+			});
+	}
 
     useEffect(() => {
+        console.log(sendId)
+        
         axios
-        .get("http://0.0.0.0:5000/get_applicant", {
-            headers: {
-                Authorization: state.session,
-                    "Content-Type": "application/x-www-form-urlencoded",
-            },
+        .post("http://0.0.0.0:5000/get_applicant",{
+            job_id:id,
+            headers: headers
         })
         .then((res) => {
             console.log(res.data);
-            setApplicants(res.data);
-            
+            if (res.data != "None"){
+                setApplicants(res.data);
+            } 
         })
         .catch((err) => {
             console.log(err);
@@ -57,7 +104,7 @@ export default function EmployerDashboard(props) {
                 <TableCell>Name</TableCell>
                 <TableCell >Email</TableCell> 
                 <TableCell>Experience </TableCell>
-               
+                <TableCell>Download Applicant Resume </TableCell>
             </TableRow>
             </TableHead>
             <TableBody>
@@ -74,13 +121,8 @@ export default function EmployerDashboard(props) {
                     <TableCell >{d.email}</TableCell>
         
                     <TableCell >{d.experience}</TableCell>
-
+                    <TableCell ><GetAppIcon button onClick={() => handleClickForDownloadResume(d.email)} /></TableCell>
                     
-                    
-                    
-                    
-                    {/* <TableCell ><EditIcon button onClick={() => handleClick(d.Id)}/> <DeleteIcon button onClick={() => handleDelete(d.Id)}/></TableCell> */}
-                    {/* <TableCell ><DeleteIcon button onClick={() => handleClick(d.Id)}/></TableCell> */}
                     </TableRow>
                 );
                 })}

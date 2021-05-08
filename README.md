@@ -1,8 +1,6 @@
-# Open Live for Web
+# Video Conferencing Feature
 
-*English | [中文](README.zh.md)*
-
-This tutorial shows you how to quickly create a live app using Agora Web SDK.
+Implemented the video conference feature for job matching portal using Agora SDK which has a good open source community and prioritizing the budget, its cheaper as compared to other sdk like chime
 
 ## Prerequisites
 
@@ -12,25 +10,30 @@ This tutorial shows you how to quickly create a live app using Agora Web SDK.
 
 This section shows you how to prepare, build, and run the sample application.
 
-### Obtain an App ID
+### Creating an account 
+
+#### Obtaining an app ID
 
 To build and run the sample application, get an App ID:
 1. Create a developer account at [agora.io](https://dashboard.agora.io/signin/). Once you finish the signup process, you will be redirected to the Dashboard.
 2. Navigate in the Dashboard tree on the left to **Projects** > **Project List**.
 3. Save the **App ID** from the Dashboard for later use.
-4. Generate a temp **Access Token** (valid for 24 hours) from dashboard page with given channel name, save for later use.
+4. Generate a temp **Access Token** (valid for 24 hours) from dashboard page with given channel name, save for later use. This channel name will be used for video conferences and multiple channel name can be created through the agora console. 
 
-5. Rename **.env.example** to **.env** file. In this file, replace `<#YOUR Agora.io APP ID#>` with the App ID, and obtain the access token generated from dashboard then replace `<#YOUR Agora.io APP TOKEN#>` with it.
+5. In the **.env** file, add your app id obtained by creating a new project on [agora.io](https://dashboard.agora.io/signin/)  to the "REACT_APP_AGORA_APP_ID" env variable and add your temporary token given you have chosen to restrict access for your project (VALID FOR 24 hrs)
 
     ```bash
+    SKIP_PREFLIGHT_CHECK=true
+
     REACT_APP_AGORA_APP_ID=<#YOUR Agora.io APP ID#>
+    REACT_APP_AGORA_APP_TOKEN=<#YOUR Agora.io Temp Token#>
     REACT_APP_AGORA_LOG=true
     ```
 
-### Install dependencies and integrate the Agora Video SDK
+### Installing The Required dependencies
 
 
-1. Using the Terminal app, enter the `install` command in your project directory. This command installs libraries that are required to run the sample application.
+1. Using the Terminal app, enter the `install` command in your project directory. This command installs libraries that are required to run the sample application. This will create a "node_modules" folder having all the required dependencies in your project directory
     ``` bash
     # install dependencies
     npm install
@@ -41,24 +44,20 @@ To build and run the sample application, get an App ID:
     # serve with hot reload at localhost:8080
     npm run dev
     ```
-    The `run build` command is for production purposes and minifies code.
+    The `run build` command is for production purposes.
     ``` bash
     # build for production with minification
     npm run build
     ```
 3. Your default browser should open and display the sample application.
-    **Note:** In some cases, you may need to open a browser and enter `http://localhost:8080` as the URL.
+    **Note:** In some cases, you may need to open a browser and enter `http://localhost:3000` as the URL.
 
 
-## Contact Us
+## External Help
 
-- For potential issues, take a look at our [FAQ](https://docs.agora.io/en/faq) first
-- Dive into [Agora SDK Samples](https://github.com/AgoraIO) to see more tutorials
-- Take a look at [Agora Use Case](https://github.com/AgoraIO-usecase) for more complicated real use case
-- Repositories managed by developer communities can be found at [Agora Community](https://github.com/AgoraIO-Community)
+- For any potential issues or general FAQ, take a look at [FAQ](https://docs.agora.io/en/faq)
 - You can find full API documentation at [Document Center](https://docs.agora.io/en/)
-- If you encounter problems during integration, you can ask question in [Stack Overflow](https://stackoverflow.com/questions/tagged/agora.io)
-- You can file bugs about this sample at [issue](https://github.com/AgoraIO/Basic-Video-Broadcasting/issues)
+
 
 ## License
 

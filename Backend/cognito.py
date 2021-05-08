@@ -22,6 +22,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import docx2txt
 import uuid
 from os.path import join as pjoin
+import shutil
 
 
 s3_client = boto3.client('s3', region_name='us-east-1')
@@ -582,6 +583,9 @@ def downloadResume():
     print(fileName)
     try:
         s3.Bucket(BUCKET_NAME).download_file(fileName, fileName)
+        path_to_download_folder = str(os.path.join(Path.home(), "Downloads"))
+        path_to_file = pjoin(path_to_download_folder, fileName)
+        shutil.move(fileName, path_to_file)
     except botocore.exceptions.ClientError as e:
         if e.response['Error']['Code'] == "404":
             print("The object does not exist.")
@@ -589,9 +593,7 @@ def downloadResume():
             raise
     
     
-    path_to_download_folder = str(os.path.join(Path.home(), "Downloads"))
-    path_to_file = pjoin(path_to_download_folder, fileName)
-    FILE = open(path_to_file, "w")
+    
     
     return "None"
 

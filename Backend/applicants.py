@@ -13,6 +13,11 @@ import json
 import docx2txt
 import uuid
 from pyresparser import ResumeParser
+from gensim.summarization.summarizer import summarize
+from gensim.summarization import keywords# Import the library
+from pdfminer.high_level import extract_text
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 app = Flask(__name__)
 APP_CLIENT_ID = "1rfl5n6j4su0mgmgkfh43fqbov"

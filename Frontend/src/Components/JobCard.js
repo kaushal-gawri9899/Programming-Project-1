@@ -110,15 +110,15 @@ export default function JobCard() {
       <Grid container alignItems="center">
         <Grid item xs>
           <Typography variant="subtitle1">{d.jobTitle}</Typography>
-          <Typography className={classes.companyName} variant="subtitle1">Google</Typography>
+          <Typography className={classes.companyName} variant="subtitle1">{d.companyName}</Typography>
         </Grid>
 
         <Grid item container xs>
-          {skills.map((skill) => (
-            <Grid key={skill} item className= {classes.skillChip}>
-              {skill}
+          
+            <Grid key={d.jobDescription} item className= {classes.skillChip}>
+              {d.jobDescription}
             </Grid>
-          ))}
+    
         </Grid>
 
         <Grid item container direction="column" alignItems="flex-end" xs>

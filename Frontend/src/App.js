@@ -9,6 +9,8 @@ import SignUp from './Components/Signup'
 import EmployeeDashboard from './Components/EmployeeDashboard'
 import Resume from './Components/Resume'
 import EmployerDashboard from './Components/EmployerDashboard'
+import Profile from "./Components/Profile"
+import ProfileEmployee from "./Components/ProfileEmployee"
 
 function App() {
   return (
@@ -28,6 +30,8 @@ function App() {
             <Route exact path="/employee" component={EmployeeDashboard}></Route>
             {/* <Route  path="/employerDashboard" component={EmployerDashboard}></Route> */}
             <Route exact path="/resume" component={Resume}></Route>
+            <Route exact path="/profile" component={Profile}></Route>
+            <Route exact path="/profileEmployee" component={ProfileEmployee}></Route>
 
           </Switch>
         </BrowserRouter>

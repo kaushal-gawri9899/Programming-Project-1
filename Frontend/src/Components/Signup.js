@@ -20,6 +20,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import NativeSelect from '@material-ui/core/NativeSelect';
 
+
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -168,7 +169,14 @@ export default function SignUp() {
           <option value={'Employee'}>Employee</option>
         </Select>
       </FormControl>
+      
       </Grid>
+      <Link>
+      <FormControlLabel
+            control={<Checkbox disabled={true} name="gilad" checked={"this.state.checkboxstate.get(g.gid)"} required />}
+            label="I agree to privacy policies"
+      />
+      </Link>
           <Button
             type="submit"
             fullWidth

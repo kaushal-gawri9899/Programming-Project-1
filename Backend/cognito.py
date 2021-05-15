@@ -321,6 +321,22 @@ def fileUpload():
     response = " "
     return response
 
+@cognitoRoute.route('/Userprofile', methods=['GET','POST'])
+def user_profile():
+    headers = request.headers.get('Authorization')
+    r = requests.get("https://kor6ktyjri.execute-api.us-east-1.amazonaws.com/dev/get_user", 
+        headers={"Authorization": headers })       
+    print(r.json())
+    email = r.json().get('Items', [])[0]['email']
+    userType = r.json().get('Items', [])[0]['usertype']
+    
+    number_of_elements = int(r.json()['Count'])
+    print(number_of_elements)
+    
+    updatedJson  = {"email": email, "usertype": userType}
+
+    finalJson = json.dumps(updatedJson)
+    return finalJson
 
 # @cognitoRoute.route('/getjobs', methods=['GET','POST'])
 # def getFilteredJobs():

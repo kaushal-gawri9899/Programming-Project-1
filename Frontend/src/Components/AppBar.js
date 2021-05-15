@@ -74,6 +74,17 @@ export function MyAppBar() {
   state.setSession('');
   }
 
+  const handleProfile = e => {
+    
+    history.push({
+      pathname:  "/profile",
+      state: {
+      response: "messageFromServer "
+      } 
+  });
+  
+  }
+
   const handleMenuClose = () => {
     setAnchorEl(null);
     handleMobileMenuClose();
@@ -94,7 +105,7 @@ export function MyAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      <MenuItem onClick={handleProfile}>Profile</MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
       <MenuItem onClick={handleLogout}>Logout</MenuItem>
     </Menu>

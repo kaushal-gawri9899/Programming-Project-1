@@ -67,6 +67,17 @@ export function AppBarEmployee() {
   state.setSession('');
   }
 
+  const handleProfile = e => {
+    
+    history.push({
+      pathname:  "/profileEmployee",
+      state: {
+      response: "messageFromServer "
+      } 
+  });
+  
+  }
+
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -95,7 +106,7 @@ export function AppBarEmployee() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      <MenuItem onClick={handleProfile}>Profile</MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
       <MenuItem onClick={handleLogout}>Logout</MenuItem>
 

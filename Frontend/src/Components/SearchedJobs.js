@@ -3,28 +3,36 @@ import { Box, Typography, Grid, Button, makeStyles } from "@material-ui/core";
 import { SessionProvider, SessionContext} from '../context/SessionContext'
 import axios from "axios";
 import { useHistory } from "react-router-dom";
-import {AppBarEmployee} from "./AppBarEmployee"
+import {AppBarEmployee} from './AppBarEmployee'
+import { useLocation } from "react-router-dom";
 
-export default function JobCard() {
-
+export default function SearchedJobs() {
+    const location = useLocation();
     const state = useContext(SessionContext)
     const [colorsData, setColorsData] = useState([]);
-    useEffect(() => {
-        axios
-        .get("http://0.0.0.0:5000/getAlljobs", {
-            headers: {
-                Authorization: state.session,
-                    "Content-Type": "application/x-www-form-urlencoded",
-            },
-        })
-        .then((res) => {
-            console.log(res.data);
-            setColorsData(res.data);
-            
-        })
-        .catch((err) => {
-            console.log(err);
-        });
+	const headers = {
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded',
+			'Authorization': state.session
+		}
+	
+	}
+	
+	useEffect(() => {
+		
+		axios.post("http://0.0.0.0:5000/getSearchedjobs",{
+				searchedJobType: location.state.Type,
+				searchJobLocation: location.state.Joblocation,
+				headers: headers
+			}).then((res) => {
+				console.log(res)
+				// action = res.data
+				setColorsData(res.data)
+				setAction(res.data)
+				
+			}).catch((err) => {
+				console.log(err);
+			});
     }, []);
 
     const skills = ["Javascript", "React.js", "Node.js", "Css", "HTML"];
@@ -77,13 +85,7 @@ export default function JobCard() {
 		};
 	
 		console.log(id)
-		const headers = {
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded',
-				'Authorization': state.session
-			}
 		
-		}
 
 		axios.post("http://0.0.0.0:5000/applyjob",{
 				job_id:id,
@@ -99,10 +101,13 @@ export default function JobCard() {
 			});
 	}
 
+	
+
 
   const classes = useStyles()
   return (
     <div>
+    <AppBarEmployee/>
     {colorsData && colorsData.map((d) => {
     return (
 	<div key={d.Id}>
@@ -134,7 +139,6 @@ export default function JobCard() {
 		</div>
         );
     })}
-	
     </div>
   );
 };

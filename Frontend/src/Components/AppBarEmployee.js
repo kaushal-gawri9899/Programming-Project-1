@@ -78,6 +78,8 @@ export function AppBarEmployee() {
   
   }
 
+ 
+
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -157,14 +159,14 @@ export function AppBarEmployee() {
               </Badge>
             </IconButton>
             <Box m={2}>
-                <Button color="inherit" href="https://stackoverflow.com/questions/37843495/material-ui-adding-link-component-from-react-router">
+                <Button color="inherit" href="employee">
                     Dashboard
                 </Button>
             </Box>
 
             <Box m={2}>
-                <Button color="inherit" href="https://stackoverflow.com/questions/37843495/material-ui-adding-link-component-from-react-router">
-                    Search Jobs
+                <Button color="inherit" href="jobsByDegree">
+                    Get Jobs By My Qualification
                 </Button>
             </Box>
 

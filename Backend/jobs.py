@@ -74,7 +74,7 @@ def getJobs():
 
     for i in range(number_of_elements):
         jobType.append(r.json()['Items'][i]['jobType']['S'])
-        location.append(r.json()['Items'][i]['location']['S'])
+        location.append(r.json()['Items'][i]['jobLocation']['S'])
         jobDescription.append(r.json()['Items'][i]['jobDescription']['S'])
         workExperience.append(r.json()['Items'][i]['workExperince']['S'])
         jobTitle.append(r.json()['Items'][i]['jobTitle']['S'])
@@ -126,7 +126,7 @@ def getFilteredJobs():
     print(r.json())
     for i in range(number_of_elements):
         jobType.append(r.json()['Items'][i]['jobType']['S'])
-        location.append(r.json()['Items'][i]['location']['S'])
+        location.append(r.json()['Items'][i]['jobLocation']['S'])
         jobDescription.append(r.json()['Items'][i]['jobDescription']['S'])
         workExperience.append(r.json()['Items'][i]['workExperince']['S'])
         jobTitle.append(r.json()['Items'][i]['jobTitle']['S'])
@@ -214,7 +214,7 @@ def getFilteredJobsId():
     for i in range(number_of_elements):
         id.append(r.json()['Items'][i]['Id']['S'])
         jobType.append(r.json()['Items'][i]['jobType']['S'])
-        location.append(r.json()['Items'][i]['location']['S'])
+        location.append(r.json()['Items'][i]['jobLocation']['S'])
         jobDescription.append(r.json()['Items'][i]['jobDescription']['S'])
         workExperience.append(r.json()['Items'][i]['workExperince']['S'])
         jobTitle.append(r.json()['Items'][i]['jobTitle']['S'])

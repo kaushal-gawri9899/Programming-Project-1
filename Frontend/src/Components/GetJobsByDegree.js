@@ -3,15 +3,18 @@ import { Box, Typography, Grid, Button, makeStyles } from "@material-ui/core";
 import { SessionProvider, SessionContext} from '../context/SessionContext'
 import axios from "axios";
 import { useHistory } from "react-router-dom";
-import {AppBarEmployee} from "./AppBarEmployee"
+import {AppBarEmployee} from './AppBarEmployee'
+import { useLocation } from "react-router-dom";
 
-export default function JobCard() {
-
+export default function GetJobsByDegree() {
+    const location = useLocation();
+    console.log(location.state)
+    
     const state = useContext(SessionContext)
     const [colorsData, setColorsData] = useState([]);
     useEffect(() => {
         axios
-        .get("http://0.0.0.0:5000/getAlljobs", {
+        .get("http://0.0.0.0:5000/getjobs", {
             headers: {
                 Authorization: state.session,
                     "Content-Type": "application/x-www-form-urlencoded",
@@ -103,6 +106,7 @@ export default function JobCard() {
   const classes = useStyles()
   return (
     <div>
+    <AppBarEmployee/>
     {colorsData && colorsData.map((d) => {
     return (
 	<div key={d.Id}>
@@ -134,7 +138,6 @@ export default function JobCard() {
 		</div>
         );
     })}
-	
     </div>
   );
 };

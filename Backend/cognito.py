@@ -249,23 +249,112 @@ def job_match():
 def getMatcheddata():
     
     headers = request.headers.get('Authorization')
-    dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
-    table = dynamodb.Table('Job_Postings')
-    response = table.scan()
-    items = response['Items']
+    
 
+    r = requests.get('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/getAllEmployeeJobs',
+    headers={"Authorization": headers})
+
+    number_of_elements = int(r.json()['Count'])
+    
+    jobTitle = []
+    jobType = []
+    location = []
+    workExperience = []
+    jobDescription = []
+    degree = []
+    Id = []
+    companyName = []
+
+    for i in range(number_of_elements):
+        jobType.append(r.json()['Items'][i]['jobType'])
+        location.append(r.json()['Items'][i]['jobLocation'])
+        jobDescription.append(r.json()['Items'][i]['jobDescription'])
+        workExperience.append(r.json()['Items'][i]['workExperince'])
+        jobTitle.append(r.json()['Items'][i]['jobTitle'])
+        degree.append(r.json()['Items'][i]['degree'])
+        Id.append(r.json()['Items'][i]['Id'])
+        companyName.append(r.json()['Items'][i]['companyName'])
+
+
+    
+
+    returnedJson  = {"Items":[{"jobDescription": jobDescription[0], "jobType": jobType[0], "location": location[0], "jobTitle": jobTitle[0], "workExperince"
+                : workExperience[0], "degree" : degree[0], "Id" : Id[0],"companyName": companyName[0]}]}
+
+    storingJson = returnedJson['Items']
+
+    for i in range(number_of_elements):
+        if i > 0:
+            updatedJson  = {"jobDescription": jobDescription[i], "jobType": jobType[i], "location": location[i], "jobTitle": jobTitle[i], "workExperince"
+                    : workExperience[i], "degree" : degree[i], "Id": Id[i],"companyName": companyName[i]}
+            storingJson.append(updatedJson)
+    
+    finalJson = json.dumps(storingJson)
    
-    return response
+    return finalJson
+
+@cognitoRoute.route('/getSearchedjobs', methods=['GET','POST'])
+def getSearchedJobs():
+    data = request.get_json()
+    location = data['searchJobLocation']
+    jobType = data['searchedJobType']
+    headers = data['headers']['headers']['Authorization']
+    r = requests.post('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/getSearchedJobs',
+       headers={"Authorization": headers}, json= {"location":location,"jobType":jobType})
+    
+    number_of_elements = int(r.json()['Count'])
+    
+    jobTitle = []
+    jobType = []
+    location = []
+    workExperience = []
+    jobDescription = []
+    Id = []
+    companyName = []
+    print(r.json())
+    for i in range(number_of_elements):
+        jobType.append(r.json()['Items'][i]['jobType']['S'])
+        location.append(r.json()['Items'][i]['jobLocation']['S'])
+        jobDescription.append(r.json()['Items'][i]['jobDescription']['S'])
+        workExperience.append(r.json()['Items'][i]['workExperince']['S'])
+        jobTitle.append(r.json()['Items'][i]['jobTitle']['S'])
+        
+        Id.append(r.json()['Items'][i]['Id']['S'])
+        companyName.append(r.json()['Items'][i]['companyName']['S'])
+
+
+    
+
+    returnedJson  = {"Items":[{"jobDescription": jobDescription[0], "jobType": jobType[0], "location": location[0], "jobTitle": jobTitle[0], "workExperince"
+                : workExperience[0],  "Id" : Id[0], "companyName": companyName[0]}]}
+
+    storingJson = returnedJson['Items']
+
+    for i in range(number_of_elements):
+        if i > 0:
+            updatedJson  = {"jobDescription": jobDescription[i], "jobType": jobType[i], "location": location[i], "jobTitle": jobTitle[i], "workExperince"
+                    : workExperience[i], "Id": Id[i], "companyName": companyName[i]}
+            storingJson.append(updatedJson)
+    
+    finalJson = json.dumps(storingJson)
+
+    
+   
+  
+   
+    return finalJson
 
 @cognitoRoute.route('/experience', methods=['GET','POST'])
 def getExperience():
     headers = request.headers.get('Authorization')
 
     r = requests.get('https://kor6ktyjri.execute-api.us-east-1.amazonaws.com/dev/experience',
-    headers={"Authorization": headers})
+        headers={"Authorization": headers})
     
+   
     data = r.json()
     print(data)
+
     return 'nothing'
 
 # Need to change Stored Email, Stored Email is Global for now

@@ -99,6 +99,14 @@ export default function SignIn() {
                 } 
             });
         }
+        else if(res.data.userType == 'Admin'){
+          history.push({
+              pathname:  "/adminDashboard",
+              state: {
+              response: "messageFromServer "
+              } 
+          });
+      }
         console.log(process.env.REACT_APP_API_KEY)
   
         console.log('Colors Data: ',res.data)

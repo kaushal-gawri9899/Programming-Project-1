@@ -384,3 +384,54 @@ def getExperience():
     print(data)
 
     return 'nothing'
+
+@jobsRoute.route('/jobsForAdmin', methods=['GET','POST'])
+def getJobsForAdmin():
+
+    headers = request.headers.get('Authorization')
+    
+    print(headers)
+    
+    r = requests.get('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/getAllEmployeeJobs',
+    headers={"Authorization": headers})
+
+    print(r.json())
+
+    number_of_elements = int(r.json()['Count'])
+    
+    jobTitle = []
+    jobType = []
+    location = []
+    workExperience = []
+    jobDescription = []
+    degree = []
+    Id = []
+    companyName = []
+
+    for i in range(number_of_elements):
+        jobType.append(r.json()['Items'][i]['jobType'])
+        location.append(r.json()['Items'][i]['jobLocation'])
+        jobDescription.append(r.json()['Items'][i]['jobDescription'])
+        workExperience.append(r.json()['Items'][i]['workExperince'])
+        jobTitle.append(r.json()['Items'][i]['jobTitle'])
+        degree.append(r.json()['Items'][i]['degree'])
+        Id.append(r.json()['Items'][i]['Id'])
+        companyName.append(r.json()['Items'][i]['companyName'])
+
+
+    
+
+    returnedJson  = {"Items":[{"jobDescription": jobDescription[0], "jobType": jobType[0], "location": location[0], "jobTitle": jobTitle[0], "workExperince"
+                : workExperience[0], "degree" : degree[0], "Id" : Id[0],"companyName": companyName[0]}]}
+
+    storingJson = returnedJson['Items']
+
+    for i in range(number_of_elements):
+        if i > 0:
+            updatedJson  = {"jobDescription": jobDescription[i], "jobType": jobType[i], "location": location[i], "jobTitle": jobTitle[i], "workExperince"
+                    : workExperience[i], "degree" : degree[i], "Id": Id[i],"companyName": companyName[i]}
+            storingJson.append(updatedJson)
+    
+    finalJson = json.dumps(storingJson)
+   
+    return finalJson

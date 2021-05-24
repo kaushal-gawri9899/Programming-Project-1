@@ -13,6 +13,9 @@ import Profile from "./Components/Profile"
 import ProfileEmployee from "./Components/ProfileEmployee"
 import SearchedJobs from "./Components/SearchedJobs"
 import GetJobsByDegree from "./Components/GetJobsByDegree"
+import AdminDashboard from './Components/AdminDashboard'
+import JobsTableForAdmin from './Components/JobsTableForAdmin'
+
 function App() {
   return (
     <div className="App">
@@ -35,6 +38,8 @@ function App() {
             <Route exact path="/profileEmployee" component={ProfileEmployee}></Route>
             <Route exact path="/searchedJobs" component={SearchedJobs}></Route>
             <Route exact path="/jobsByDegree" component={GetJobsByDegree}></Route>
+            <Route exact path="/adminDashboard" component={AdminDashboard}></Route>
+            <Route exact path="/jobsTableForAdmin" component={JobsTableForAdmin}></Route>
 
           </Switch>
         </BrowserRouter>

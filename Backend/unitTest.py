@@ -9,7 +9,7 @@ jobID = "A12"
 
 class TestJobMatchMakingPortal(unittest.TestCase):
  # Return true if a user is created with a usertype Employer
-    def test_signing_up_as_a_employer(self):
+    def test_return_true_if_signed_up_as_a_employer(self):
 
         user_email = "ali@ninja.com"
         usertype = "Employer"
@@ -36,7 +36,7 @@ class TestJobMatchMakingPortal(unittest.TestCase):
         self.assertEqual(usertype,returnedUserType)
 
 # Return true if a usertype is created with the usertype Employee
-    def test_signing_up_as_a_employee(self):
+    def test_return_true_if_signed_up_as_a_employee(self):
 
         user_email = "pg@we.com"
         usertype = "Employee"
@@ -63,7 +63,7 @@ class TestJobMatchMakingPortal(unittest.TestCase):
         self.assertEqual(usertype,returnedUserType)
 
 # Return true if a user is Signed In as Employer
-    def test_user_signining_in_as_an_Employer(self):
+    def test_return_true_if_user__can_sign_in_as_an_Employer(self):
         
         user_email = "ali@ninja.com"
         password = "Password12@"
@@ -88,7 +88,7 @@ class TestJobMatchMakingPortal(unittest.TestCase):
         self.assertEqual(usertype,"Employer")
 
 # Return true if a user is Signed In as Employee
-    def test_user_signining_in_as_an_Employee(self):
+    def test_return_true_if_user__can_sign_in_as_an_Employee(self):
         
         user_email = "pg@we.com"
         password = "Password12@"
@@ -113,7 +113,7 @@ class TestJobMatchMakingPortal(unittest.TestCase):
         self.assertEqual(usertype,"Employee")
 
 # Return true if Employer signs up and deletes a job
-    def test_signing_up_and_delete_Job_Posting(self):
+    def test_return_true_if_signing_up_and_delete_Job_Posting(self):
         
         user_email = "ali@ninja.com"
         password = "Password12@"
@@ -149,7 +149,7 @@ class TestJobMatchMakingPortal(unittest.TestCase):
         self.assertEqual(jobsBeforeDeletion-1,jobsAfterDeletion)
 
 # Return true if details from File are uploaded
-    def test_signing_in_as_employee_and_uploading_resume(self):
+    def test_return_true_if_signing_in_as_employee_and_uploading_resume(self):
 
         user_email = "pg@we.com"
         password = "Password12@"
@@ -194,50 +194,8 @@ class TestJobMatchMakingPortal(unittest.TestCase):
 
         self.assertEqual(returnedName,name)
 
-# Return true if job is Applied
-    def test_signing_in_as_employee_and_Applying_job(self):
-
-        user_email = "pg@we.com"
-        password = "Password12@"
-
-        # User already signed up and confirmed on cognito
-
-        loginUser =  cognito_client.initiate_auth(ClientId=APP_CLIENT_ID,
-                                        AuthFlow='USER_PASSWORD_AUTH',
-                                        AuthParameters={
-                                        'USERNAME': user_email,
-                                        'PASSWORD': password
-                                        }
-        )
-
-        id_token = loginUser['AuthenticationResult']['IdToken']
-
-        matchPercentage = "20"
-
-        applyForJob = requests.post('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/apply_job',
-            headers={"Authorization": id_token},
-            json= {"Id":jobID,"name":"Ali Tariq","workExperince":"1","matchingPercentage":str(matchPercentage)})
-        
-        loginEmployer =  cognito_client.initiate_auth(ClientId=APP_CLIENT_ID,
-                                        AuthFlow='USER_PASSWORD_AUTH',
-                                        AuthParameters={
-                                        'USERNAME': "ali@ninja.com",
-                                        'PASSWORD': password
-                                        }
-        )
-        
-        id_token = loginEmployer['AuthenticationResult']['IdToken']
-
-        getApplicant = requests.get('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/getApplicantJobs/' + jobID,
-            headers={"Authorization": id_token}
-        )
-
-        returnedMatchPercentage = getApplicant.json()['Items'][0]['matchingPercentage']['S']
-
-        self.assertEqual(matchPercentage,returnedMatchPercentage)
-
 # Return true if employer signs up and edits a job        
-    def test_signing_up_and_edit_Job_Posting(self):
+    def test_return_true_if_signing_up_and_edit_Job_Posting(self):
 
         user_email = "ali@ninja.com"
         password = "Password12@"
@@ -270,7 +228,7 @@ class TestJobMatchMakingPortal(unittest.TestCase):
         self.assertEqual(companyName,returnedCompanyName)
 
 # Return true if a job is posted with given details 
-    def test_signing_up_and_create_Job_Posting(self):
+    def test__return_ture_if_signing_up_and_create_Job_Posting(self):
 
         user_email = "ali@ninja.com"
         password = "Password12@"
@@ -305,7 +263,7 @@ class TestJobMatchMakingPortal(unittest.TestCase):
         self.assertEqual(companyName,returnedCompanyName)
 
 # Return true if user profile information is corred
-    def test_signing_in_and_checking_profile_information(self):
+    def test_return_true_if_signing_in_and_checking_profile_information(self):
         
         # Signing in as Employee so Usertype should be Employee
         expectedUsertype = "Employee"
@@ -330,7 +288,6 @@ class TestJobMatchMakingPortal(unittest.TestCase):
         actualUserType = getProfileInformation.json().get('Items', [])[0]['usertype']
 
         self.assertEqual(expectedUsertype,actualUserType)
-
 
 
 

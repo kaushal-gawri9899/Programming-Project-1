@@ -18,6 +18,11 @@ from gensim.summarization import keywords# Import the library
 from pdfminer.high_level import extract_text
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from os.path import join as pjoin
+import shutil
+from pathlib import Path
+
+s3 = boto3.resource('s3')
 
 app = Flask(__name__)
 APP_CLIENT_ID = "1rfl5n6j4su0mgmgkfh43fqbov"
@@ -188,3 +193,78 @@ def fileUpload():
     response = " "
     print("Upload Sucessful")
     return response
+
+@applicantsRoute.route('/getSearchedjobs', methods=['GET','POST'])
+def getSearchedJobs():
+    data = request.get_json()
+    location = data['searchJobLocation']
+    jobType = data['searchedJobType']
+    headers = data['headers']['headers']['Authorization']
+    r = requests.post('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/getSearchedJobs',
+       headers={"Authorization": headers}, json= {"location":location,"jobType":jobType})
+    
+    number_of_elements = int(r.json()['Count'])
+    
+    jobTitle = []
+    jobType = []
+    location = []
+    workExperience = []
+    jobDescription = []
+    Id = []
+    companyName = []
+    print(r.json())
+    for i in range(number_of_elements):
+        jobType.append(r.json()['Items'][i]['jobType']['S'])
+        location.append(r.json()['Items'][i]['jobLocation']['S'])
+        jobDescription.append(r.json()['Items'][i]['jobDescription']['S'])
+        workExperience.append(r.json()['Items'][i]['workExperince']['S'])
+        jobTitle.append(r.json()['Items'][i]['jobTitle']['S'])
+        
+        Id.append(r.json()['Items'][i]['Id']['S'])
+        companyName.append(r.json()['Items'][i]['companyName']['S'])
+
+
+    
+
+    returnedJson  = {"Items":[{"jobDescription": jobDescription[0], "jobType": jobType[0], "location": location[0], "jobTitle": jobTitle[0], "workExperince"
+                : workExperience[0],  "Id" : Id[0], "companyName": companyName[0]}]}
+
+    storingJson = returnedJson['Items']
+
+    for i in range(number_of_elements):
+        if i > 0:
+            updatedJson  = {"jobDescription": jobDescription[i], "jobType": jobType[i], "location": location[i], "jobTitle": jobTitle[i], "workExperince"
+                    : workExperience[i], "Id": Id[i], "companyName": companyName[i]}
+            storingJson.append(updatedJson)
+    
+    finalJson = json.dumps(storingJson)
+
+    
+   
+  
+   
+    return finalJson
+
+@applicantsRoute.route('/downloadResume', methods=['GET','POST'])
+def downloadResume():
+    data = request.get_json()
+    print(data)
+    email = data['user_email']
+    newEmail = email.replace("@","")
+    fileName = newEmail + ".pdf"
+    print(fileName)
+    try:
+        s3.Bucket(BUCKET_NAME).download_file(fileName, fileName)
+        path_to_download_folder = str(os.path.join(Path.home(), "Downloads"))
+        path_to_file = pjoin(path_to_download_folder, fileName)
+        shutil.move(fileName, path_to_file)
+    except botocore.exceptions.ClientError as e:
+        if e.response['Error']['Code'] == "404":
+            print("The object does not exist.")
+        else:
+            raise
+    
+    
+    
+    
+    return "None"

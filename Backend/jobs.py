@@ -11,6 +11,12 @@ from werkzeug.utils import secure_filename
 import json
 import docx2txt
 import uuid
+from pyresparser import ResumeParser
+from gensim.summarization.summarizer import summarize
+from gensim.summarization import keywords# Import the library
+from pdfminer.high_level import extract_text
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 app = Flask(__name__)
 APP_CLIENT_ID = "1rfl5n6j4su0mgmgkfh43fqbov"
@@ -249,3 +255,138 @@ def delete():
        
     return "d"
 
+@jobsRoute.route('/getSearchedjobs', methods=['GET','POST'])
+def getSearchedJobs():
+    data = request.get_json()
+    location = data['searchJobLocation']
+    jobType = data['searchedJobType']
+    headers = data['headers']['headers']['Authorization']
+    r = requests.post('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/getSearchedJobs',
+       headers={"Authorization": headers}, json= {"location":location,"jobType":jobType})
+    
+    number_of_elements = int(r.json()['Count'])
+    
+    jobTitle = []
+    jobType = []
+    location = []
+    workExperience = []
+    jobDescription = []
+    Id = []
+    companyName = []
+    print(r.json())
+    for i in range(number_of_elements):
+        jobType.append(r.json()['Items'][i]['jobType']['S'])
+        location.append(r.json()['Items'][i]['jobLocation']['S'])
+        jobDescription.append(r.json()['Items'][i]['jobDescription']['S'])
+        workExperience.append(r.json()['Items'][i]['workExperince']['S'])
+        jobTitle.append(r.json()['Items'][i]['jobTitle']['S'])
+        
+        Id.append(r.json()['Items'][i]['Id']['S'])
+        companyName.append(r.json()['Items'][i]['companyName']['S'])
+
+
+    
+
+    returnedJson  = {"Items":[{"jobDescription": jobDescription[0], "jobType": jobType[0], "location": location[0], "jobTitle": jobTitle[0], "workExperince"
+                : workExperience[0],  "Id" : Id[0], "companyName": companyName[0]}]}
+
+    storingJson = returnedJson['Items']
+
+    for i in range(number_of_elements):
+        if i > 0:
+            updatedJson  = {"jobDescription": jobDescription[i], "jobType": jobType[i], "location": location[i], "jobTitle": jobTitle[i], "workExperince"
+                    : workExperience[i], "Id": Id[i], "companyName": companyName[i]}
+            storingJson.append(updatedJson)
+    
+    finalJson = json.dumps(storingJson)
+
+    
+   
+  
+   
+    return finalJson
+
+@jobsRoute.route('/getAlljobs', methods=['GET','POST'])
+def getMatcheddata():
+    
+    headers = request.headers.get('Authorization')
+    
+
+    r = requests.get('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/getAllEmployeeJobs',
+    headers={"Authorization": headers})
+
+    number_of_elements = int(r.json()['Count'])
+    
+    jobTitle = []
+    jobType = []
+    location = []
+    workExperience = []
+    jobDescription = []
+    degree = []
+    Id = []
+    companyName = []
+
+    for i in range(number_of_elements):
+        jobType.append(r.json()['Items'][i]['jobType'])
+        location.append(r.json()['Items'][i]['jobLocation'])
+        jobDescription.append(r.json()['Items'][i]['jobDescription'])
+        workExperience.append(r.json()['Items'][i]['workExperince'])
+        jobTitle.append(r.json()['Items'][i]['jobTitle'])
+        degree.append(r.json()['Items'][i]['degree'])
+        Id.append(r.json()['Items'][i]['Id'])
+        companyName.append(r.json()['Items'][i]['companyName'])
+
+
+    
+
+    returnedJson  = {"Items":[{"jobDescription": jobDescription[0], "jobType": jobType[0], "location": location[0], "jobTitle": jobTitle[0], "workExperince"
+                : workExperience[0], "degree" : degree[0], "Id" : Id[0],"companyName": companyName[0]}]}
+
+    storingJson = returnedJson['Items']
+
+    for i in range(number_of_elements):
+        if i > 0:
+            updatedJson  = {"jobDescription": jobDescription[i], "jobType": jobType[i], "location": location[i], "jobTitle": jobTitle[i], "workExperince"
+                    : workExperience[i], "degree" : degree[i], "Id": Id[i],"companyName": companyName[i]}
+            storingJson.append(updatedJson)
+    
+    finalJson = json.dumps(storingJson)
+   
+    return finalJson
+
+@jobsRoute.route('/match', methods=['GET','POST'])
+def job_match():
+
+    resume = extract_text(stored_email)
+    text_resume = str(resume)#Summarize the text with ratio 0.1 (10% of the total words.)
+    summarized_resume = summarize(text_resume, ratio=0.5)
+    # print(summarized_resume)
+
+    text = "Given Text" # Prompt for the Job description.
+    # Convert text to string format
+    text = str(text)#Summarize the text with ratio 0.1 (10% of the total words.)
+    summarize(text, ratio=0.5) 
+
+    text_list = [text_resume, text]
+
+    cv = CountVectorizer()
+    count_matrix = cv.fit_transform(text_list)
+
+    matchPercentage = cosine_similarity(count_matrix)[0][1] * 100
+    matchPercentage = round(matchPercentage, 2) # round to two decimal
+    # print("Your resume matches about “+ str(matchPercentage)+ “% of the job description.")
+
+    return " "
+
+@jobsRoute.route('/experience', methods=['GET','POST'])
+def getExperience():
+    headers = request.headers.get('Authorization')
+
+    r = requests.get('https://kor6ktyjri.execute-api.us-east-1.amazonaws.com/dev/experience',
+        headers={"Authorization": headers})
+    
+   
+    data = r.json()
+    print(data)
+
+    return 'nothing'

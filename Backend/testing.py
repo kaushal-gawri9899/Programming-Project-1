@@ -1,7 +1,6 @@
 import unittest
 import requests
 import boto3
-import uuid
 
 dynamodb_client = boto3.client('dynamodb', region_name="us-east-1")
 cognito_client = boto3.client('cognito-idp', region_name='us-east-1')

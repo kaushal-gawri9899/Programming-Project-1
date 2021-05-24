@@ -1,19 +1,14 @@
-import os
 from flask import Flask, render_template, redirect, url_for, request, jsonify, session, Blueprint, jsonify
-import boto3
 from botocore.exceptions import ClientError
 from boto3.dynamodb.conditions import Key, Attr
 import requests
 import os
-import botocore
 import requests
 from werkzeug.utils import secure_filename
 import json
-import docx2txt
 import uuid
 from pyresparser import ResumeParser
 from gensim.summarization.summarizer import summarize
-from gensim.summarization import keywords# Import the library
 from pdfminer.high_level import extract_text
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity

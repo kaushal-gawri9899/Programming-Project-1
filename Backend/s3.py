@@ -1,12 +1,5 @@
-import os
 from flask import Flask, render_template, redirect, url_for, request, jsonify, session, Blueprint
 import boto3
-from botocore.exceptions import ClientError
-from boto3.dynamodb.conditions import Key
-import requests
-import os
-import botocore
-import requests
 from werkzeug.utils import secure_filename
 
 s3_client = boto3.client('s3', region_name='us-east-1')

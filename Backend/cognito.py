@@ -1,28 +1,11 @@
 from warnings import simplefilter 
 simplefilter(action='ignore', category=DeprecationWarning)
-import os
-from flask import Flask, render_template, redirect, url_for, request, jsonify, session, Blueprint, jsonify
+from flask import Flask, redirect, url_for, request, jsonify, session, Blueprint, jsonify
 import boto3
 from botocore.exceptions import ClientError
-from boto3.dynamodb.conditions import Key, Attr
 import requests
-import os
-import botocore
 import requests
-from werkzeug.utils import secure_filename
-from tika import parser
 import json
-from pathlib import Path
-from pyresparser import ResumeParser
-from gensim.summarization.summarizer import summarize
-from gensim.summarization import keywords# Import the library
-from pdfminer.high_level import extract_text
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
-import docx2txt
-import uuid
-from os.path import join as pjoin
-import shutil
 
 
 s3_client = boto3.client('s3', region_name='us-east-1')

@@ -71,6 +71,7 @@ export default function SignIn() {
         password: password,
     
     };
+    // http://ec2-54-90-223-53.compute-1.amazonaws.com:5000/auth/login
   
     axios.post('http://0.0.0.0:5000/auth/login',user)
     .then(res=>{
@@ -98,6 +99,7 @@ export default function SignIn() {
                 } 
             });
         }
+        console.log(process.env.REACT_APP_API_KEY)
   
         console.log('Colors Data: ',res.data)
         

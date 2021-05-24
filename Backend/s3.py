@@ -8,7 +8,6 @@ BUCKET_NAME='programming-project-resume'
 
 s3Route = Blueprint('s3Route', __name__)
 
-from tika import parser # pip install tika
 
 
 @s3Route.route('/upload', methods=['GET','POST'])

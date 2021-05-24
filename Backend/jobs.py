@@ -7,7 +7,6 @@ import requests
 from werkzeug.utils import secure_filename
 import json
 import uuid
-from pyresparser import ResumeParser
 from gensim.summarization.summarizer import summarize
 from pdfminer.high_level import extract_text
 from sklearn.feature_extraction.text import CountVectorizer

@@ -17,6 +17,7 @@ import Resume from './Components/Employee/Resume';
 import EmployeeJobPage from './Components/Employee/JobPage'
 import Footer from "./Components/Footer"
 
+import AdminDashboard from './Components/Admin/Dashboard'
 
 function App() {
 	return (
@@ -37,6 +38,9 @@ function App() {
 					<Route  path="/employee/dashboard" component={EmployeeDashboard}></Route>
 					<Route path="/employee/job/:id" component={EmployeeJobPage}></Route>
 					<Route exact path="/employee/resume" component={Resume}></Route>
+					
+					<Route  path="/admin/dashboard" component={AdminDashboard}></Route>
+
 				</Switch>
 			</BrowserRouter>
 		</SessionProvider>

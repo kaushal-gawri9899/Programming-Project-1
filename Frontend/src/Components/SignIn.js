@@ -74,7 +74,12 @@ export default function SignIn() {
                 history.push({
                     pathname:  "/employer/dashboard"
                 });
-            }  
+            } 
+            else if(res.data.userType == 'Admin'){
+                history.push({
+                    pathname:  "/admin/dashboard"
+                });
+            }   
         })
         .catch(err => {
             setError('Incorrect email or password. Please try again')

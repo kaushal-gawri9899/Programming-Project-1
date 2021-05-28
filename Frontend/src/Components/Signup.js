@@ -145,11 +145,12 @@ export default function SignUp() {
 						<MenuItem value={'Employee'}>Employee</MenuItem>
 					</Select>
 					</FormControl>
-					<Link>
+					<Link href="/privacy">
 					<FormControlLabel
 						control={<Checkbox value="remember" color="primary" checked={true} />}
-						label="I agree to the Privacy Policy"
-						/> 
+					
+					></FormControlLabel> 
+					I agree to the Privacy Policy
 					</Link>
 					<Button
 						type="submit"

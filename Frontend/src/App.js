@@ -7,6 +7,7 @@ import theme from './theme';
 import { SessionProvider } from "./context/SessionContext";
 import SignIn from './Components/SignIn'
 import SignUp from './Components/Signup'
+import Privacy from './Components/Common/PrivacyPolicy'
 
 import EmployerDashboard from './Components/Employer/Dashboard';
 import CreatePost from './Components/Employer/CreatePost';
@@ -18,6 +19,7 @@ import EmployeeJobPage from './Components/Employee/JobPage'
 import Footer from "./Components/Footer"
 
 import AdminDashboard from './Components/Admin/Dashboard'
+import AdminJobApplicants from './Components/Admin/JobDetails'
 
 function App() {
 	return (
@@ -29,7 +31,9 @@ function App() {
 				<Switch>
 					<Route exact path="/" component={SignIn}></Route>
 					<Route exact path="/sign-up" component={SignUp}></Route>
-					
+					<Route exact path="/privacy" component={Privacy}></Route>
+
+
 					<Route  path="/employer/dashboard" component={EmployerDashboard}></Route>
 					<Route  path="/employer/job/:id" component={EmployerJobApplicants}></Route>
 					<Route path="/create-post" component={CreatePost}></Route>
@@ -40,6 +44,7 @@ function App() {
 					<Route exact path="/employee/resume" component={Resume}></Route>
 					
 					<Route  path="/admin/dashboard" component={AdminDashboard}></Route>
+					<Route  path="/admin/job/:id" component={AdminJobApplicants}></Route>
 
 				</Switch>
 			</BrowserRouter>

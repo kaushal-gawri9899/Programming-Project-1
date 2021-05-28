@@ -10,7 +10,6 @@ import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import Alert from '@material-ui/lab/Alert';
 
-import NumberOfApplicationsChart from './NumberOfApplicationsChart';
 import JobsTable from './AdminJobsTable';
 import AdminNavbar from './Navbar'
 
@@ -58,32 +57,10 @@ export default function AdminDashboard() {
 
 					<Grid container spacing={3}>
 
-						<Grid item xs={12} md={8} lg={9}>
-							<Paper className={classes.fixedHeight}>
-								<NumberOfApplicationsChart />
-							</Paper>
-						</Grid>
-						<Grid item xs={12} md={4} lg={3}>
-							<Paper className={classes.fixedHeight}>
-								<Typography variant="h2">Best Match Percentage</Typography>
-								<div className={classes.depositContext}>
-									<Typography component="p" variant="h4">
-										98.5 %
-									</Typography>
-									<Typography color="textSecondary">
-										for Software Enginner
-									</Typography>
-								</div>
-								{/* <div>
-									<Link color="primary" href="#">
-									View Applicant
-									</Link>
-								</div> */}
-							</Paper>
-						</Grid>
-						<Grid item xs={12}>
+						
+						<Grid item xs={40}>
 							<Paper className={classes.paper}>
-								<Typography variant="h2">Your Postings</Typography>
+								<Typography variant="h2">All Postings</Typography>
 								<JobsTable />
 							</Paper>
 						</Grid>

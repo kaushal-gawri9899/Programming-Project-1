@@ -7,6 +7,7 @@ import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import PublishIcon from '@material-ui/icons/Publish';
 import Alert from '@material-ui/lab/Alert';
+import { useHistory } from "react-router-dom";
 
 import EmployeeNavbar from './Navbar'
 
@@ -38,6 +39,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Resume() {
+    
+    const history = useHistory();
 
     const classes = useStyles();
     const state = useContext(SessionContext);
@@ -65,6 +68,9 @@ export default function Resume() {
         })
         .then((res) => {
             setSuccessMessage('Your resume was uploaded successfully. You can now apply to all roles with 1-click.')
+            history.push({
+                pathname:  "/employer/dashboard"
+            });
         })
         .catch((err) => {
             setErrorMessage('There was an error uploading your resume. Please try again')

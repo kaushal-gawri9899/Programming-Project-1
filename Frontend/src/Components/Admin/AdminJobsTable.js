@@ -62,7 +62,7 @@ export default function AdminJobsTable() {
 
     const handleClick = (id, event) => {
         history.push({
-            pathname:  "/employer/job/" + id
+            pathname:  "/admin/job/" + id
         });
     }
 

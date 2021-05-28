@@ -1,4 +1,3 @@
-
 import os
 from flask import Flask, render_template, redirect, url_for, request, jsonify, session, Blueprint, jsonify
 import boto3
@@ -90,7 +89,7 @@ def get_applicants():
         data = request.get_json()
         jobId = data['job_id']
         headers  = data['headers']['headers']['Authorization']
-        final_job_id =  jobId[:-1]
+        final_job_id =  data['job_id']
 
         print(headers)
 
@@ -265,6 +264,3 @@ def downloadResume():
     
     
     return "None"
-
-
-

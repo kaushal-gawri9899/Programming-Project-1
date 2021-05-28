@@ -13,6 +13,7 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "axios": "^0.21.1",
+    "clsx": "^1.1.1",
     "material-table": "^1.69.2",
     "material-ui": "^0.20.2",
     "material-ui-chip-input": "^2.0.0-beta.2",
@@ -28,12 +29,13 @@
     "react-split-pane": "^0.1.92",
     "react-table": "^7.6.3",
     "react-text-truncate": "^0.16.0",
+    "recharts": "^2.0.9",
     "underscore": "^1.13.1",
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "env-cmd -f .env.Deployment react-scripts start",
-    "build": "env-cmd -f .env.Deployment react-scripts build",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

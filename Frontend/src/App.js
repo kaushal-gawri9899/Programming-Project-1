@@ -1,51 +1,48 @@
 import React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import Hire from "./Components/Hire";
-import CreatePost from "./Components/CreatePost";
-import Button from "./Components/Resume";
+import { ThemeProvider } from '@material-ui/core/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import theme from './theme';
+
 import { SessionProvider } from "./context/SessionContext";
 import SignIn from './Components/SignIn'
 import SignUp from './Components/Signup'
-import EmployeeDashboard from './Components/EmployeeDashboard'
-import Resume from './Components/Resume'
-import EmployerDashboard from './Components/EmployerDashboard'
-import Profile from "./Components/Profile"
-import ProfileEmployee from "./Components/ProfileEmployee"
-import SearchedJobs from "./Components/SearchedJobs"
-import GetJobsByDegree from "./Components/GetJobsByDegree"
-import AdminDashboard from './Components/AdminDashboard'
-import JobsTableForAdmin from './Components/JobsTableForAdmin'
+
+import EmployerDashboard from './Components/Employer/Dashboard';
+import CreatePost from './Components/Employer/CreatePost';
+import EmployerJobApplicants from './Components/Employer/JobApplicants';
+
+import EmployeeDashboard from './Components/Employee/Dashboard';
+import Resume from './Components/Employee/Resume';
+import EmployeeJobPage from './Components/Employee/JobPage'
+import Footer from "./Components/Footer"
+
 
 function App() {
-  return (
-    <div className="App">
-      <SessionProvider>
-        <BrowserRouter>
-          <Switch>
-            <Route exact path="/" component={SignIn}></Route>
-            <Route exact path="/SignUp" component={SignUp}></Route>
+	return (
+	<ThemeProvider theme={theme}>
+		<CssBaseline />
 
-            <Route path="/hire" component={Hire}></Route>
-            <Route path="/button" component={Button}></Route>
-            <Route path="/createPost/:id?mode=edit" component={CreatePost}></Route>
-            <Route path="/employerDashboard/:id?mode=edit" component={EmployerDashboard}></Route>
+		<SessionProvider>
+			<BrowserRouter>
+				<Switch>
+					<Route exact path="/" component={SignIn}></Route>
+					<Route exact path="/sign-up" component={SignUp}></Route>
+					
+					<Route  path="/employer/dashboard" component={EmployerDashboard}></Route>
+					<Route  path="/employer/job/:id" component={EmployerJobApplicants}></Route>
+					<Route path="/create-post" component={CreatePost}></Route>
+					<Route path="/edit-post/:id" component={CreatePost}></Route>
 
-            <Route path="/createPost" component={CreatePost}></Route>
-            <Route exact path="/employee" component={EmployeeDashboard}></Route>
-            {/* <Route  path="/employerDashboard" component={EmployerDashboard}></Route> */}
-            <Route exact path="/resume" component={Resume}></Route>
-            <Route exact path="/profile" component={Profile}></Route>
-            <Route exact path="/profileEmployee" component={ProfileEmployee}></Route>
-            <Route exact path="/searchedJobs" component={SearchedJobs}></Route>
-            <Route exact path="/jobsByDegree" component={GetJobsByDegree}></Route>
-            <Route exact path="/adminDashboard" component={AdminDashboard}></Route>
-            <Route exact path="/jobsTableForAdmin" component={JobsTableForAdmin}></Route>
-
-          </Switch>
-        </BrowserRouter>
-      </SessionProvider>
-    </div>
-  );
+					<Route  path="/employee/dashboard" component={EmployeeDashboard}></Route>
+					<Route path="/employee/job/:id" component={EmployeeJobPage}></Route>
+					<Route exact path="/employee/resume" component={Resume}></Route>
+				</Switch>
+			</BrowserRouter>
+		</SessionProvider>
+		<Footer />
+	</ThemeProvider>
+	);
 }
 
 export default App;

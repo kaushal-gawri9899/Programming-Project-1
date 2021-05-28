@@ -31,7 +31,7 @@ def postPosting():
         workExperince = data['workExperince']
         sessionId = data['sessionId']
         print(sessionId)
-        degree = data['chips']
+        degree = data['chips'][0]
         print(degree)
         Id = uuid.uuid4()
       
@@ -41,7 +41,7 @@ def postPosting():
         r = requests.post('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/create_job',
             headers={"Authorization": sessionId},
             json= {"Id":str(Id),"jobTitle":jobTitle,"jobDescription":jobDescription,"location":location,"jobType":jobType,
-            "workExperince":workExperince,"degree":"Degreeof"+degree,"companyName":companyName})
+            "workExperince":workExperince,"degree":"Degreeof"+str(degree),"companyName":companyName})
       
 
 
@@ -71,35 +71,37 @@ def getJobs():
     jobDescription = []
     degree = []
     Id = []
-
-    for i in range(number_of_elements):
-        jobType.append(r.json()['Items'][i]['jobType']['S'])
-        location.append(r.json()['Items'][i]['jobLocation']['S'])
-        jobDescription.append(r.json()['Items'][i]['jobDescription']['S'])
-        workExperience.append(r.json()['Items'][i]['workExperince']['S'])
-        jobTitle.append(r.json()['Items'][i]['jobTitle']['S'])
-        degree.append(r.json()['Items'][i]['degree']['S'])
-        Id.append(r.json()['Items'][i]['Id']['S'])
-
-
-    
-
-    returnedJson  = {"Items":[{"jobDescription": jobDescription[0], "jobType": jobType[0], "location": location[0], "jobTitle": jobTitle[0], "workExperince"
-                : workExperience[0], "degree" : degree[0], "Id" : Id[0]}]}
-
-    storingJson = returnedJson['Items']
-
-    for i in range(number_of_elements):
-        if i > 0:
-            updatedJson  = {"jobDescription": jobDescription[i], "jobType": jobType[i], "location": location[i], "jobTitle": jobTitle[i], "workExperince"
-                    : workExperience[i], "degree" : degree[i], "Id": Id[i]}
-            storingJson.append(updatedJson)
-    
-    finalJson = json.dumps(storingJson)
-    # print(finalJson)
+    if number_of_elements > 0:
+        for i in range(number_of_elements):
+            jobType.append(r.json()['Items'][i]['jobType']['S'])
+            location.append(r.json()['Items'][i]['jobLocation']['S'])
+            jobDescription.append(r.json()['Items'][i]['jobDescription']['S'])
+            workExperience.append(r.json()['Items'][i]['workExperince']['S'])
+            jobTitle.append(r.json()['Items'][i]['jobTitle']['S'])
+            degree.append(r.json()['Items'][i]['degree']['S'])
+            Id.append(r.json()['Items'][i]['Id']['S'])
 
 
-    return finalJson
+        
+
+        returnedJson  = {"Items":[{"jobDescription": jobDescription[0], "jobType": jobType[0], "location": location[0], "jobTitle": jobTitle[0], "workExperince"
+                    : workExperience[0], "degree" : degree[0], "Id" : Id[0]}]}
+
+        storingJson = returnedJson['Items']
+
+        for i in range(number_of_elements):
+            if i > 0:
+                updatedJson  = {"jobDescription": jobDescription[i], "jobType": jobType[i], "location": location[i], "jobTitle": jobTitle[i], "workExperince"
+                        : workExperience[i], "degree" : degree[i], "Id": Id[i]}
+                storingJson.append(updatedJson)
+        
+        finalJson = json.dumps(storingJson)
+        # print(finalJson)
+
+
+        return finalJson
+    else:
+        return " "
 
 @jobsRoute.route('/getjobs', methods=['GET','POST'])
 def getFilteredJobs():
@@ -124,38 +126,41 @@ def getFilteredJobs():
     Id = []
     companyName = []
     print(r.json())
-    for i in range(number_of_elements):
-        jobType.append(r.json()['Items'][i]['jobType']['S'])
-        location.append(r.json()['Items'][i]['jobLocation']['S'])
-        jobDescription.append(r.json()['Items'][i]['jobDescription']['S'])
-        workExperience.append(r.json()['Items'][i]['workExperince']['S'])
-        jobTitle.append(r.json()['Items'][i]['jobTitle']['S'])
+    if number_of_elements > 0:
+        for i in range(number_of_elements):
+            jobType.append(r.json()['Items'][i]['jobType']['S'])
+            location.append(r.json()['Items'][i]['jobLocation']['S'])
+            jobDescription.append(r.json()['Items'][i]['jobDescription']['S'])
+            workExperience.append(r.json()['Items'][i]['workExperince']['S'])
+            jobTitle.append(r.json()['Items'][i]['jobTitle']['S'])
+            
+            Id.append(r.json()['Items'][i]['Id']['S'])
+            companyName.append(r.json()['Items'][i]['companyName']['S'])
+
+
         
-        Id.append(r.json()['Items'][i]['Id']['S'])
-        companyName.append(r.json()['Items'][i]['companyName']['S'])
+
+        returnedJson  = {"Items":[{"jobDescription": jobDescription[0], "jobType": jobType[0], "location": location[0], "jobTitle": jobTitle[0], "workExperince"
+                    : workExperience[0],  "Id" : Id[0], "companyName": companyName[0]}]}
+
+        storingJson = returnedJson['Items']
+
+        for i in range(number_of_elements):
+            if i > 0:
+                updatedJson  = {"jobDescription": jobDescription[i], "jobType": jobType[i], "location": location[i], "jobTitle": jobTitle[i], "workExperince"
+                        : workExperience[i], "Id": Id[i], "companyName": companyName[i]}
+                storingJson.append(updatedJson)
+        
+        finalJson = json.dumps(storingJson)
+        print(finalJson)
+
+        
+        
 
 
-    
-
-    returnedJson  = {"Items":[{"jobDescription": jobDescription[0], "jobType": jobType[0], "location": location[0], "jobTitle": jobTitle[0], "workExperince"
-                : workExperience[0],  "Id" : Id[0], "companyName": companyName[0]}]}
-
-    storingJson = returnedJson['Items']
-
-    for i in range(number_of_elements):
-        if i > 0:
-            updatedJson  = {"jobDescription": jobDescription[i], "jobType": jobType[i], "location": location[i], "jobTitle": jobTitle[i], "workExperince"
-                    : workExperience[i], "Id": Id[i], "companyName": companyName[i]}
-            storingJson.append(updatedJson)
-    
-    finalJson = json.dumps(storingJson)
-    print(finalJson)
-
-    
-    
-
-
-    return finalJson
+        return finalJson
+    else:
+        return "  "
 
 
 @jobsRoute.route('/edit_job_posting', methods=['GET','POST'])
@@ -170,7 +175,7 @@ def editPosting():
         sessionId = data['sessionId']
         jobId = data['id']
         companyName = data['companyName']
-        final_job_id =  jobId[:-1]
+        final_job_id =  data['id']
         
         r = requests.post('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/editJob',
             headers={"Authorization": sessionId},

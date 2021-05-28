@@ -1,204 +1,185 @@
-import React, { Component,useState, useEffect  } from 'react';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
+import React, { useState  } from 'react';
+import axios from 'axios';
+import { useHistory } from "react-router-dom";
+import { makeStyles } from '@material-ui/core/styles';
+
+import Container from '@material-ui/core/Container';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import Alert from '@material-ui/lab/Alert';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import axios from 'axios';
-import { useHistory } from "react-router-dom";
+import Hidden from '@material-ui/core/Hidden';
+import Button from '@material-ui/core/Button';
 import InputLabel from '@material-ui/core/InputLabel';
-import FormHelperText from '@material-ui/core/FormHelperText';
+import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import NativeSelect from '@material-ui/core/NativeSelect';
-
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import Navbar from "./Navbar"
 
 const useStyles = makeStyles((theme) => ({
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
-  paper: {
-    marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(3),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-  
+	root: {
+        flexGrow: 1,
+        marginTop: theme.spacing(4),
+        padding: theme.spacing(2)
+    },
+    form: {
+        width: '100%', // Fix IE 11 issue.
+		marginTop: theme.spacing(1)
+    },
+	formControl: {
+		width: '100%',
+		marginTop: theme.spacing(2),
+		marginBottom: theme.spacing(2)
+	},
+    submit: {
+        margin: theme.spacing(3, 0, 2),
+    },
+    image: {
+        width: '500px'
+    }
 }));
 
 
 
 export default function SignUp() {
+
   const history = useHistory();
   const classes = useStyles();
-  const [userType, setUsertype] = useState('Employer');
+
+  const [userType, setUsertype] = useState();
   const [username, setUsername] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
+  const [error, setError] = useState();
 
   const handleSubmitSignUp = e => {
     e.preventDefault();
-    let information
-    const user = {
+
+	const user = {
         email: email,
         username: username,
         password: password,
         usertype: userType
     };
-    console.log(user);
-    axios.post('http://0.0.0.0:5000/auth/signup',user)
-    .then(res=>{
-        console.log('Response from main API: ',res)
-        console.log('Home Data: ',res.data.userType)
-        console.log('Colors Data: ',res.data.data);
+
+    axios.post('http://0.0.0.0:5000/auth/signup', user)
+    .then(res => {
         history.push({ 
           pathname: '/',
-      });
-
-
+      	});
     })
-    .catch(err=>{
-        console.log(err);
+    .catch(err => {
+        setError("Unfortunately we couldn't sign you up. Please ensure all fields are filled and try again.")
     })
 
 }
 
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign up
-        </Typography>
-        <form className={classes.form} noValidate>
-          <Grid container spacing={2}>
-          <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="email"
-                value={username}
-                onChange={(e) => setUsername(e.target.value) }
-                label="Username"
-                name="username"
-                autoComplete="username"
-              />
+	<>
+	<Navbar />
+    <Container component="main" maxWidth="lg">
+		<div className={classes.root}>
+		<Grid container>
+			<Grid item md={5} xs={12}>
+				<Typography component="h1" variant="h5">Sign Up</Typography>
+				
+				<form className={classes.form} noValidate>
+
+					{ error && <Alert severity="error">{error}</Alert> }
+
+					<TextField
+						variant="outlined"
+						margin="normal"
+						required
+						fullWidth
+						id="username"
+						value={username}
+						onChange={(e) => setUsername(e.target.value) }
+						label="Name"
+						name="username"
+						autoComplete="username"
+					/>
+
+					<TextField
+						variant="outlined"
+						margin="normal"
+						required
+						fullWidth
+						id="email"
+						value={email}
+						onChange={(e) => setEmail(e.target.value) }
+						label="Email Address"
+						name="email"
+						autoComplete="email"
+					/>
+
+					<TextField
+						variant="outlined"
+						margin="normal"
+						required
+						fullWidth
+						name="password"
+						value={password}
+						onChange={(e) => setPassword(e.target.value) }
+						label="Password"
+						type="password"
+						id="password"
+						autoComplete="current-password"
+					/>
+
+					<FormControl variant="outlined" className={classes.formControl}>
+					<InputLabel id="user-type-label">User Type</InputLabel>
+					<Select
+						labelId="user-type-label"
+						id="user-type"
+						value={userType}
+						onChange={(e) => setUsertype(e.target.value)}
+						label="User Type"
+					>
+						<MenuItem value=""></MenuItem>
+						<MenuItem value={'Employer'}>Employer</MenuItem>
+						<MenuItem value={'Employee'}>Employee</MenuItem>
+					</Select>
+					</FormControl>
+					<Link>
+					<FormControlLabel
+						control={<Checkbox value="remember" color="primary" checked={true} />}
+						label="I agree to the Privacy Policy"
+						/> 
+					</Link>
+					<Button
+						type="submit"
+						fullWidth
+						variant="contained"
+						color="primary"
+						onClick={handleSubmitSignUp}
+						className={classes.submit}
+					>
+						Sign Up
+					</Button>
+					<Link href="/" variant="body2">Already have an account? Sign in</Link>
+				</form>
+			</Grid>
+			<Grid item md={1}></Grid>
+            <Grid item md={6} xs={12}>
+                <Hidden xsDown>
+                <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    minHeight="53vh"
+                >
+                    <img src={process.env.PUBLIC_URL + '/sign-up.png'} className={classes.image}/>
+                </Box>
+                </Hidden>
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value) }
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                name="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value) }
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-              />
-            </Grid>
-           
-          </Grid>
-        <Grid item xs={12}>
-        <FormControl variant="filled" className={classes.formControl}>
-        <InputLabel htmlFor="filled-age-native-simple">UserType</InputLabel>
-        <Select
-          native
-          value={userType}
-          onChange={(e) => setUsertype(e.target.value) }
-          inputProps={{
-            name: 'age',
-            id: 'filled-age-native-simple',
-          }}
-        >
-          <option value={'Employer'}>Employer</option>
-          <option value={'Employee'}>Employee</option>
-        </Select>
-      </FormControl>
-      
-      </Grid>
-      <Link>
-      <FormControlLabel
-            control={<Checkbox disabled={true} name="gilad" checked={"this.state.checkboxstate.get(g.gid)"} required />}
-            label="I agree to privacy policies"
-      />
-      </Link>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            onClick={handleSubmitSignUp}
-            className={classes.submit}
-          >
-            Sign Up
-          </Button>
-          <Grid container justify="flex-end">
-            <Grid item>
-              <Link href="/" variant="body2">
-                Already have an account? Sign in
-              </Link>
-            </Grid>
-          </Grid>
-        </form>
-      </div>
-      <Box mt={5}>
-        <Copyright />
-      </Box>
+		</Grid>
+		</div>
     </Container>
+	</>
   );
 }

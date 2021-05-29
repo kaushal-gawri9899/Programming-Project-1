@@ -266,21 +266,17 @@ def downloadResume():
     fileName = newEmail + ".pdf"
     print(fileName)
     try:
-        
-        s3.Bucket(BUCKET_NAME).download_file(fileName, fileName)
-        # path_to_download_folder = str(os.path.join(Path.home(), "Downloads"))
-        # path_to_file = pjoin(path_to_download_folder, fileName)
-        # shutil.move(fileName, path_to_file)
+        url = s3_client.generate_presigned_url(
+            'get_object',
+            Params={'Bucket': BUCKET_NAME, 'Key': fileName},
+            ExpiresIn=300)
     except botocore.exceptions.ClientError as e:
         if e.response['Error']['Code'] == "404":
             print("The object does not exist.")
         else:
             raise
     
-    
-    
-    
-    return "None"
+    return url
 
 @applicantsRoute.route('/getApplicantsChartData', methods=['GET','POST'])
 def getApplicantsChartData():

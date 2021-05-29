@@ -61,7 +61,7 @@ export default function JobPage() {
 
     useEffect(() => {
         axios
-        .post("http://0.0.0.0:5000/filtered_jobs_id",{
+        .post(`${process.env.REACT_APP_DEPLOYED_URL}` + "/filtered_jobs_id",{
             job_id: id,
             headers: {
                 headers: {
@@ -80,7 +80,7 @@ export default function JobPage() {
     }, []);
 
     const handleApply = () => {
-        axios.post("http://0.0.0.0:5000/applyjob",{
+        axios.post(`${process.env.REACT_APP_DEPLOYED_URL}` + "/applyjob",{
             job_id:id,
             headers: {
                 headers: {

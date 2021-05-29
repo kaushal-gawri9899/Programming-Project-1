@@ -37,7 +37,7 @@ export default function JobsTable() {
     const [jobs, setJobs] = useState([]);
     
     useEffect(() => {
-        axios.get("http://0.0.0.0:5000/jobs", {
+        axios.get(`${process.env.REACT_APP_DEPLOYED_URL}` + "/jobs", {
             headers: {
                 Authorization: state.session,
                 "Content-Type": "application/x-www-form-urlencoded",

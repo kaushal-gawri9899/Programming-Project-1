@@ -58,8 +58,9 @@ export default function SignIn() {
             password: password,
 
         };
+    
 
-        axios.post('http://0.0.0.0:5000/auth/login', user)
+        axios.post(`${process.env.REACT_APP_DEPLOYED_URL}` + '/auth/login', user)
         .then(res => {
 
             let token = res.data.idToken;

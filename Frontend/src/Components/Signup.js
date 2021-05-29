@@ -66,7 +66,7 @@ export default function SignUp() {
         usertype: userType
     };
 
-    axios.post('http://0.0.0.0:5000/auth/signup', user)
+    axios.post(`${process.env.REACT_APP_DEPLOYED_URL}` + '/auth/signup', user)
     .then(res => {
         history.push({ 
           pathname: '/',

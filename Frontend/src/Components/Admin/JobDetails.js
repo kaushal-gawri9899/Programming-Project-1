@@ -52,7 +52,7 @@ export default function JobApplicants() {
     useEffect(() => {
         
         axios
-        .post("http://0.0.0.0:5000/get_applicant",{
+        .post(`${process.env.REACT_APP_DEPLOYED_URL}` + "/get_applicant",{
             job_id: id,
             headers: {
                 headers: {
@@ -74,12 +74,12 @@ export default function JobApplicants() {
 
     const handleEdit = () => {
         history.push({
-            pathname:  "/edit-post/" + id
+            pathname:  "/edit-post-admin/" + id
         });
     }
 
     const handleDelete = () => {
-        axios.delete("http://0.0.0.0:5000/delete_job", {
+        axios.delete(`${process.env.REACT_APP_DEPLOYED_URL}` + "/delete_job", {
             data: {
                 id: id,
                 sessionId: state.session
@@ -87,7 +87,7 @@ export default function JobApplicants() {
         })
         .then((res) => {
             history.push({
-                pathname:  "/employer/dashboard",
+                pathname:  "/admin/dashboard",
                 state: { detail: `Your job has been successfully deleted` }
             });
          
@@ -97,7 +97,7 @@ export default function JobApplicants() {
     }
 
     const handleClick = (applicantEmail) => {
-        axios.post("http://0.0.0.0:5000/downloadResume",{
+        axios.post(`${process.env.REACT_APP_DEPLOYED_URL}` + "/downloadResume",{
             user_email: applicantEmail,
             headers: {
                 Authorization: state.session,

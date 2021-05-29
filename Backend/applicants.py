@@ -19,11 +19,14 @@ import shutil
 from pathlib import Path
 from collections import Counter
 
-s3 = boto3.resource('s3')
+s3 = boto3.resource('s3', aws_access_key_id='AKIATZIASX66M3DNOP2C',
+         aws_secret_access_key= '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')
 
 app = Flask(__name__)
 APP_CLIENT_ID = "1rfl5n6j4su0mgmgkfh43fqbov"
-s3_client = boto3.client('s3', region_name='us-east-1')
+s3_client = boto3.client('s3', region_name='us-east-1',
+         aws_access_key_id='AKIATZIASX66M3DNOP2C',
+         aws_secret_access_key= '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')
 UPLOAD_FOLDER = ''
 applicantsRoute = Blueprint('applicantsRoute', __name__)
 BUCKET_NAME='programming-project-resume'

@@ -8,11 +8,11 @@ import requests
 import json
 
 
-s3_client = boto3.client('s3', region_name='us-east-1')
+
 
 BUCKET_NAME='programming-project-resume'
-s3 = boto3.resource('s3')
-s3Route = Blueprint('s3Route', __name__)
+
+
 
 UPLOAD_FOLDER = ''
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])

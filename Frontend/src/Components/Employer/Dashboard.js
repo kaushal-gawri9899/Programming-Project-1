@@ -51,7 +51,7 @@ export default function EmployerDashboard() {
     const [highestMatchPercentage, setMatchPercentage] = useState(0);
 
     useEffect(() => {
-        axios.get("http://0.0.0.0:5000/getApplicantsChartData", {
+        axios.get(`${process.env.REACT_APP_DEPLOYED_URL}` + "/getApplicantsChartData", {
             headers: {
                 Authorization: state.session,
                 "Content-Type": "application/x-www-form-urlencoded",

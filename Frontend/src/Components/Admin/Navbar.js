@@ -27,7 +27,7 @@ export default function AdminNavbar() {
 							</Link>
 						</Grid>
 						<Grid item xs={5}>
-							<Link href="/" underline="none">
+							<Link href="https://video-conference.dxfzj9xfwcl73.amplifyapp.com/#/" underline="none">
 								<Typography variant="body1" color="textSecondary">+ Join Meeting</Typography>
 							</Link>
 						</Grid>

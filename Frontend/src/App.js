@@ -20,6 +20,7 @@ import Footer from "./Components/Footer"
 
 import AdminDashboard from './Components/Admin/Dashboard'
 import AdminJobApplicants from './Components/Admin/JobDetails'
+import EditPost from './Components/Admin/EditPost'
 
 function App() {
 	return (
@@ -45,6 +46,7 @@ function App() {
 					
 					<Route  path="/admin/dashboard" component={AdminDashboard}></Route>
 					<Route  path="/admin/job/:id" component={AdminJobApplicants}></Route>
+					<Route path="/edit-post-admin/:id" component={EditPost}></Route>
 
 				</Switch>
 			</BrowserRouter>

@@ -60,7 +60,7 @@ export default function Resume() {
         const data = new FormData();
         data.append('file', resume);
 
-        axios.post('http://0.0.0.0:5000/upload', data, {
+        axios.post(`${process.env.REACT_APP_DEPLOYED_URL}` + '/upload', data, {
             headers: {
                 Authorization: state.session,
                 "Content-Type": "application/x-www-form-urlencoded",

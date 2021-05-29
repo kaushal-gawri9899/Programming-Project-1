@@ -21,7 +21,7 @@ export default function EmployeeDashboard() {
 
     useEffect(() => {
         axios
-        .get("http://0.0.0.0:5000/getAlljobs", {
+        .get(`${process.env.REACT_APP_DEPLOYED_URL}` + "/getAlljobs", {
             headers: {
                 Authorization: state.session,
                 "Content-Type": "application/x-www-form-urlencoded",
@@ -37,7 +37,7 @@ export default function EmployeeDashboard() {
     }, []);
 
     const handleFilter = () => {
-        axios.post("http://0.0.0.0:5000/getSearchedjobs", 
+        axios.post(`${process.env.REACT_APP_DEPLOYED_URL}` + "/getSearchedjobs", 
         {
             searchedJobType: filterJobType,
             searchJobLocation: filterJobLocation,

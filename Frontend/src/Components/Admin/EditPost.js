@@ -23,7 +23,7 @@ import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker} from '@material-ui/pickers';
 
 import EmployerNavbar from './Navbar'
-import CreatePostStepper from './CreatePostStepper'
+import CreatePostStepper from '../Employer/CreatePostStepper'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function CreatePost() {
+export default function EditPost() {
 
     const state = useContext(SessionContext);
     const classes = useStyles();
@@ -119,7 +119,7 @@ export default function CreatePost() {
         .then((res) => {
 
             history.push({
-                pathname:  "/employer/dashboard",
+                pathname:  "/admin/dashboard",
                 state: { detail: successMessage }
             });
 

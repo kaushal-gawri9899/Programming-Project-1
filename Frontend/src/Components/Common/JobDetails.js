@@ -53,7 +53,7 @@ export default function JobPage(props) {
 
     useEffect(() => {
         axios
-        .post("http://0.0.0.0:5000/filtered_jobs_id",{
+        .post(`${process.env.REACT_APP_DEPLOYED_URL}` + "/filtered_jobs_id",{
             job_id: id,
             headers: {
                 headers: {
@@ -91,13 +91,7 @@ export default function JobPage(props) {
                     <Card elevation={4} className={classes.card}>
                         <CardContent className={classes.cardContent}>
                             <Typography variant="body2" component="p" color="secondary">
-                                {/* { job.jobDescription } */}
-                                The GD204 Graduate Diploma in Early Childhood Education is designed to enable you to work as a professional teacher in early childhood education contexts.<br/><br/>
-                                You will be equipped with the necessary critical and pedagogical strategies to become an effective teacher across a range of early childhood education contexts.<br/><br/>
-                                The program primarily provides qualification as an early chilldhood teacher in early childhood settings in Australia.<br/><br/>
-                                The progarm also incorporates global perspectives, and is designed for you to develop a range of transferable skills to work here and overseas in related settings.Based on Australia’s national Early Years Learning Framework for early childhood teachers, this program prepares you to extend and enrich learning across the curriculum for infants, toddlers and young children from birth to five years.<br/><br/>
-                                You will support and design high quality learning experiences for young children that enable global citizens in yet-to-be-imagined futures.<br/><br/>
-                                Exploring possibilities for children as advocates, enablers, custodians and thinkers will underpin your philosophy of learning and teaching.You will join a community of inquiry located in the RMIT Pedagogies of possibilities Lab (PoPLab) - a virtual and physical space for innovative industry partnered research.<br/><br/>
+                                { job.jobDescription }
                             </Typography>
                         </CardContent> 
                     </Card>

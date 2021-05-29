@@ -33,7 +33,7 @@ export default function EmployeeNavbar(props) {
 							</Link>
 						</Grid>
 						<Grid item xs={1}>
-							<Link href="/" underline="none">
+							<Link href="https://video-conference.dxfzj9xfwcl73.amplifyapp.com/#/" underline="none">
 								<Typography variant="body1" color="textSecondary">+ Meeting</Typography>
 							</Link>
 						</Grid>

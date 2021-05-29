@@ -23,12 +23,9 @@ export default function NumberOfApplicationsChart() {
     const history = useHistory();
     const state = useContext(SessionContext);
     const [jobs, setJobs] = useState([]);
-    const [applicants, setApplicants] = useState([]);
-    const [numberOfCandidates, setNumberOfCandidates] = useState([]);
-    const [jobId, setJobId] = useState([]);
     const [totalJobs, setTotalJobs] = useState(0);
 
-    const theArray = []
+   
 
 
 
@@ -42,22 +39,9 @@ export default function NumberOfApplicationsChart() {
         })
         .then((res) => {
             
-            setJobs(res.data.TotalNumberOfCandidates);
-                setTotalJobs(res.data.TotalJobs)
-                
-                // setHighestPercentage(res.data.highestPercentage)
-                // const { id, name } = res.data;
-                // for (let i = 0; i < totalJobs; i++) {
-                //     // theArray.push({
-                //     //     name: res.data.TotalNumberOfCandidates[i].Jobid,
-                //     // });
-                //     setJobId(res.data.TotalNumberOfCandidates[i].Jobid)
-                // }
-                // setApplicants(res.data.TotalNumberOfCandidates)
-            console.log(totalJobs)
-                
-            
-            
+
+            setTotalJobs(res.data.totalJobs)
+            setJobs( res.data.TotalNumberOfCandidates)       
             console.log(res.data)
 
             
@@ -71,28 +55,33 @@ export default function NumberOfApplicationsChart() {
             });
             console.log(err);
         });
+        console.log(totalJobs)
+    
+        console.log(jobs)
     }, []);
+
+ 
 
     return (
         <div>
             <Typography variant="h2">Number of Applications</Typography>
             <LineChart
-                data={data}
+                data={jobs}
                 height={200}
                 width={900}
                 margin={{ top: 20, right: 30, left: 20, bottom: 25 }}
             >
-                <XAxis dataKey="name" />
+                <XAxis dataKey="jobId" />
                 <YAxis />
                 <CartesianGrid strokeDasharray="3 3" />
                 <Tooltip />
                 <Line
                     type="monotone"
-                    dataKey="applications"
+                    dataKey="matchedCandidates"
                     stroke={theme.palette.primary.main}
                     activeDot={{ r: 8 }}
                 />
-                <Line type="monotone" dataKey="matches" stroke={theme.palette.success.main} />
+                <Line type="monotone" dataKey="totalCandidates" stroke={theme.palette.success.main} />
             </LineChart>
         </div>
     );

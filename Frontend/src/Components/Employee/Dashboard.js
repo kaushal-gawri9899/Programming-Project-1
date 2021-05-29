@@ -66,7 +66,7 @@ export default function EmployeeDashboard() {
             { jobs.length == 0 && 
                 <Typography align="center">
                     <br/><br/>
-                    Sorry, there aren't any jobs open at the moment. Check back in again later
+                    {/* Sorry, there aren't any jobs open at the moment. Check back in again later */}
                 </Typography>
             }
 

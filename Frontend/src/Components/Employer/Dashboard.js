@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { useHistory, useLocation } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -9,10 +9,12 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import Alert from '@material-ui/lab/Alert';
+import axios from 'axios';
 
 import NumberOfApplicationsChart from './NumberOfApplicationsChart';
 import JobsTable from './JobsTable';
 import EmployerNavbar from './Navbar'
+import { SessionContext} from '../../context/SessionContext'
 
 
 
@@ -41,10 +43,43 @@ const useStyles = makeStyles((theme) => ({
 }));
   
 export default function EmployerDashboard() {
-	const [highestPercentage, setHighestPercentage] = useState(0);
+	
 	const history = useHistory();
 	const location = useLocation();
 	const classes = useStyles();
+    const state = useContext(SessionContext);
+    const [highestMatchPercentage, setMatchPercentage] = useState(0);
+
+    useEffect(() => {
+        axios.get("http://0.0.0.0:5000/getApplicantsChartData", {
+            headers: {
+                Authorization: state.session,
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+        })
+        .then((res) => {
+            
+
+            // setTotalJobs(res.data.totalJobs)
+            setMatchPercentage( res.data.heighestMatch)       
+            console.log(res.data)
+
+            
+        })
+        .catch((err) => {
+            history.push({
+                pathname:  "/",
+                state: {
+                    response: "You've have been logged out. Please log-in again"
+                }
+            });
+            console.log(err);
+        });
+        // console.log(totalJobs)
+    
+        // console.log(jobs)
+    }, []);
+
 
 	return (
         <>
@@ -77,7 +112,7 @@ export default function EmployerDashboard() {
 								<Typography variant="h2">Best Match Percentage</Typography>
 								<div className={classes.depositContext}>
 									<Typography component="p" variant="h4">
-										98.5 %
+                                        {highestMatchPercentage} %
 									</Typography>
 									<Typography color="textSecondary">
 										for Software Enginner

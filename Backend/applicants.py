@@ -289,10 +289,13 @@ def getApplicantsChartData():
     )
     
     number_of_elements = int(r.json()['Count'])
+    print(r.json())
 
     counter = 0
 
     number_of_elements_for_applicants = int(getNumberOfApplicants.json()['Count'])
+    if number_of_elements_for_applicants == 0:
+        return "None"
 
     Id = []
     experience = []
@@ -306,7 +309,7 @@ def getApplicantsChartData():
     print(Id)
     print(experience)
     print(matchingPercentage)
-
+    # if len(matchingPercentage) != 0:
     highestMatchPercentage = max(matchingPercentage)
 
     my_dict = {i:Id.count(i) for i in Id}
@@ -325,24 +328,30 @@ def getApplicantsChartData():
 
     print(findMatches)
 
-    updatedJson = '{' + '"TotalNumberOfCandidates":' + '['
-
+    
+    updatedJson = {}
+   
+    updatedJson['TotalNumberOfCandidates'] = []
     for j in range(len(my_dict.keys())):
         findingDictValue = my_dict[getNumberOfApplicants.json()['Items'][j]['Id']['S']]
-        updatedJson += '{' + '"Jobid"' + ':' + '"' + str(list(my_dict)[j]) + '"' + ',' +  '"totalCandidates"' + ':' + '"' +  str(findingDictValue) + '",' +  '"matchedCandidates"' + ':' + '"' +  str(findMatches[j]) + '"' +'}'
+       
+        
+        updatedJson['TotalNumberOfCandidates'].append({
+            'jobId':r.json()['Items'][j]['jobTitle']['S'],
+            'totalCandidates': str(findingDictValue),
+            'matchedCandidates': str(findMatches[j])
+        })
+      
+    updatedJson['heighestMatch'] = str(highestMatchPercentage)
+    updatedJson['totalJobs'] = str(number_of_elements) 
+
+    json_data = json.dumps(updatedJson)
+
+
+    print(json_data)
+
     
-        if j < len(my_dict.keys())-1:
-            updatedJson += ','
-
-    updatedJson += ']' + ',' + '"HightestMatch"' + ':' + '"' + str(highestMatchPercentage) + '"' + ',' + '"TotalJobs"' + ':' + '"' + str(number_of_elements) + '"' +'}' 
-    print(updatedJson)
-  
-    finalJson = json.loads(updatedJson)
-
-    print(finalJson)
-
-    
-    return finalJson
+    return json_data
 
 def findNumberOfMatches(Id, headers):
     counter = 0

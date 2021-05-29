@@ -7,10 +7,10 @@ import requests
 from werkzeug.utils import secure_filename
 import json
 import uuid
-from gensim.summarization.summarizer import summarize
-from pdfminer.high_level import extract_text
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+# from gensim.summarization.summarizer import summarize
+# from pdfminer.high_level import extract_text
+# from sklearn.feature_extraction.text import CountVectorizer
+# from sklearn.metrics.pairwise import cosine_similarity
 
 app = Flask(__name__)
 APP_CLIENT_ID = "1rfl5n6j4su0mgmgkfh43fqbov"

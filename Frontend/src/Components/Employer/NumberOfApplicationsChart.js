@@ -36,6 +36,7 @@ export default function NumberOfApplicationsChart() {
             if (res.data != " "){
                 setJobs(res.data);
             }
+            console.log(res.data)
             
         })
         .catch((err) => {

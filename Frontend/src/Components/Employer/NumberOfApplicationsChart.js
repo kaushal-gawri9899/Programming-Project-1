@@ -23,6 +23,14 @@ export default function NumberOfApplicationsChart() {
     const history = useHistory();
     const state = useContext(SessionContext);
     const [jobs, setJobs] = useState([]);
+    const [applicants, setApplicants] = useState([]);
+    const [numberOfCandidates, setNumberOfCandidates] = useState([]);
+    const [jobId, setJobId] = useState([]);
+    const [totalJobs, setTotalJobs] = useState(0);
+
+    const theArray = []
+
+
 
 
     useEffect(() => {
@@ -33,10 +41,25 @@ export default function NumberOfApplicationsChart() {
             },
         })
         .then((res) => {
-            if (res.data != " "){
-                setJobs(res.data);
-            }
+            
+            setJobs(res.data.TotalNumberOfCandidates);
+                setTotalJobs(res.data.TotalJobs)
+                
+                // setHighestPercentage(res.data.highestPercentage)
+                // const { id, name } = res.data;
+                // for (let i = 0; i < totalJobs; i++) {
+                //     // theArray.push({
+                //     //     name: res.data.TotalNumberOfCandidates[i].Jobid,
+                //     // });
+                //     setJobId(res.data.TotalNumberOfCandidates[i].Jobid)
+                // }
+                // setApplicants(res.data.TotalNumberOfCandidates)
+            console.log(totalJobs)
+                
+            
+            
             console.log(res.data)
+
             
         })
         .catch((err) => {

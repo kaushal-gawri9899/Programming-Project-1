@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { useHistory, useLocation } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
 }));
   
 export default function EmployerDashboard() {
-
+	const [highestPercentage, setHighestPercentage] = useState(0);
 	const history = useHistory();
 	const location = useLocation();
 	const classes = useStyles();

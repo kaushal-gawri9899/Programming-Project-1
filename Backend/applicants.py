@@ -9,11 +9,11 @@ import botocore
 import requests
 from werkzeug.utils import secure_filename
 import json
-# from pyresparser import ResumeParser
-# from gensim.summarization.summarizer import summarize
-# from pdfminer.high_level import extract_text
-# from sklearn.feature_extraction.text import CountVectorizer
-# from sklearn.metrics.pairwise import cosine_similarity
+from pyresparser import ResumeParser
+from gensim.summarization.summarizer import summarize
+from pdfminer.high_level import extract_text
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 from os.path import join as pjoin
 import shutil
 from pathlib import Path
@@ -308,64 +308,55 @@ def getApplicantsChartData():
     print(matchingPercentage)
 
     highestMatchPercentage = max(matchingPercentage)
-    # print(highestMatchPercentage)
 
-    # i = matchingPercentage[0]
-    # findingNumberOfMatches = {i:Id.count(i) for i in Id if int(i) > 50}
     my_dict = {i:Id.count(i) for i in Id}
-    # print(my_dict)
-    # 
-    # print(list(my_dict.keys())[0])
 
-    # f = [(i) for i in number_of_elements_for_applicants if matchingPercentage[i] > 50]
-
-    # {"key1": [1,2,3,"hello"], "key2": A_class_instance }
     t = []
     h = ""
-
-    # If Id 
-
-    # for i in range(2):
-    #     if list(my_dict.keys())[i]:
-    #         # if list(my_dict.keys())[i] == 
-    #         h += list(my_dict.keys())[i] + ", "
-
-    
-    # my_dict[list["061c0d39-0fe3-40b4-bd72-40c0aaa61895"]].append("Guru")
-    
-    # h += "{'Items': ["
-    # storingJson = []
-    returnJson = {"Items":[{"highestMatch":str(highestMatchPercentage)," totalJobs":str(number_of_elements)}]}
-    print(returnJson["Items"])
-    storingJson = returnJson['Items']
-    for i in range(number_of_elements_for_applicants):
-        for j in range(len(my_dict.keys())):
-            
-            if getNumberOfApplicants.json()['Items'][i]['Id']['S'] == list(my_dict.keys())[j]:
-                print(getNumberOfApplicants.json()['Items'][i]['matchingPercentage']['S'])
-                # h += str(list(my_dict.keys())[j]):str(getNumberOfApplicants.json()['Items'][i]['matchingPercentage']['S'])}
-                h += str(list(my_dict.keys())[j]) + ": " + str(getNumberOfApplicants.json()['Items'][i]['matchingPercentage']['S'])
-                updatedJson = {list(my_dict.keys())[j]:str(getNumberOfApplicants.json()['Items'][i]['matchingPercentage']['S'])}
-                storingJson.append(updatedJson)
-    print(storingJson)
-    # print(findingNumberOfMatches)
-    # print(returnJson)
-
-
  
-    
-    # returnJson = {"highestMatch":str(highestMatchPercentage)," totalJobs":str(number_of_elements)}
-    # finalString = "{"
-    # finalString += " 'HighestMatch': " + str(highestMatchPercentage) + " , "
-    # finalString += "'Total Jobs': " + str(number_of_elements) + " ,  "
-    # finalString += h
-    # finalString += "}"
+    h += "{'Items': ["
+    returnJson = '{' + '"Items"' ':[' +  '{' + '"highestMatch":' +  '"' + str(highestMatchPercentage) + '",' + '"totalJobs":' + '"' +  str(number_of_elements) + '"' + '}]'
 
-    # print(finalString)
-    # returnJson.append(storingJson)
-    finalJson = json.dumps(returnJson)
-    # finalJson.append(storingJson)
+    findMatches = []
+    for j in range(len(my_dict.keys())):
+        sendThisId = list(my_dict.keys())[j]
+        findMatches.append(findNumberOfMatches(sendThisId,headers))
+
+
+    print(findMatches)
+
+    updatedJson = '{' + '"TotalNumberOfCandidates":' + '['
+
+    for j in range(len(my_dict.keys())):
+        findingDictValue = my_dict[getNumberOfApplicants.json()['Items'][j]['Id']['S']]
+        updatedJson += '{' + '"Jobid"' + ':' + '"' + str(list(my_dict)[j]) + '"' + ',' +  '"totalCandidates"' + ':' + '"' +  str(findingDictValue) + '",' +  '"matchedCandidates"' + ':' + '"' +  str(findMatches[j]) + '"' +'}'
+    
+        if j < len(my_dict.keys())-1:
+            updatedJson += ','
+
+    updatedJson += ']' + ',' + '"HightestMatch"' + ':' + '"' + str(highestMatchPercentage) + '"' + ',' + '"TotalJobs"' + ':' + '"' + str(number_of_elements) + '"' +'}' 
+    print(updatedJson)
+  
+    finalJson = json.loads(updatedJson)
+
     print(finalJson)
+
     
     return finalJson
+
+def findNumberOfMatches(Id, headers):
+    counter = 0
+
+    getNumberOfApplicants = requests.get('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/getTotalApplicant',
+        headers={"Authorization": headers}
+    )
+
+    number_of_elements_for_applicants = int(getNumberOfApplicants.json()['Count'])
+
+    for i in range(number_of_elements_for_applicants):
+        if Id == getNumberOfApplicants.json()['Items'][i]['Id']['S'] and float(getNumberOfApplicants.json()['Items'][i]['matchingPercentage']['S']) > 30:
+            counter = counter + 1
+
+    return counter
+
 

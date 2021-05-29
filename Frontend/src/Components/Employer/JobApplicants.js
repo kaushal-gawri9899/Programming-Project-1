@@ -16,7 +16,7 @@ import Button from '@material-ui/core/Button';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-
+import Alert from '@material-ui/lab/Alert';
 import EmployerNavbar from './Navbar'
 import JobDetails from '../Common/JobDetails';
 
@@ -96,6 +96,7 @@ export default function JobApplicants() {
             console.log(error)
         });   
     }
+    const [success, setSuccessMessage] = useState('');
 
     const handleClick = (applicantEmail) => {
         axios.post(`${process.env.REACT_APP_DEPLOYED_URL}` + "/downloadResume",{
@@ -105,7 +106,9 @@ export default function JobApplicants() {
                 "Content-Type": "application/x-www-form-urlencoded",
             }
         }).then((res) => {
-            console.log(res);				
+            setSuccessMessage('Please enter the following link in another tab to download Resume: ' + res.data)
+            console.log(res.data);
+            
         }).catch((err) => {
             console.log(err);
         });
@@ -172,7 +175,9 @@ export default function JobApplicants() {
                         </TableBody>
                     </Table>
                     }
+                    
                 </TableContainer>
+                { success && <Alert>{success}</Alert> }
                 
             </Container>
         </>

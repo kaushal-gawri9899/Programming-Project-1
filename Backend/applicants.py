@@ -18,6 +18,8 @@ from os.path import join as pjoin
 import shutil
 from pathlib import Path
 from collections import Counter
+import d6tpipe
+api = d6tpipe.api.APILocal()
 
 s3 = boto3.resource('s3', aws_access_key_id='AKIATZIASX66M3DNOP2C',
          aws_secret_access_key= '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')
@@ -264,10 +266,11 @@ def downloadResume():
     fileName = newEmail + ".pdf"
     print(fileName)
     try:
+        
         s3.Bucket(BUCKET_NAME).download_file(fileName, fileName)
-        path_to_download_folder = str(os.path.join(Path.home(), "Downloads"))
-        path_to_file = pjoin(path_to_download_folder, fileName)
-        shutil.move(fileName, path_to_file)
+        # path_to_download_folder = str(os.path.join(Path.home(), "Downloads"))
+        # path_to_file = pjoin(path_to_download_folder, fileName)
+        # shutil.move(fileName, path_to_file)
     except botocore.exceptions.ClientError as e:
         if e.response['Error']['Code'] == "404":
             print("The object does not exist.")

@@ -20,7 +20,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EmployerNavbar from './Navbar'
 import JobDetails from '../Common/JobDetails';
 
-import { SessionContext} from '../../context/SessionContext'
+import { SessionContext} from '../../context/SessionContext';
 import { transparent } from 'material-ui/styles/colors';
 
 const useStyles = makeStyles((theme) => ({
@@ -63,6 +63,7 @@ export default function JobApplicants() {
         })
         .then((res) => {
             if (res.data != "None"){
+                console.log(res.data)
                 setApplicants(res.data);
             }
         })

@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useTheme } from '@material-ui/core/styles';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip  } from 'recharts';
 import Typography from '@material-ui/core/Typography';
+import { useHistory } from 'react-router';
+import axios from 'axios';
+import { SessionContext} from '../../context/SessionContext'
+
 
 const data = [
     { name: "Job I", applications: 4000, matches: 2400 },
@@ -12,8 +16,38 @@ const data = [
 ];
 
 
+
+
 export default function NumberOfApplicationsChart() {
     const theme = useTheme();
+    const history = useHistory();
+    const state = useContext(SessionContext);
+    const [jobs, setJobs] = useState([]);
+
+
+    useEffect(() => {
+        axios.get("http://0.0.0.0:5000/getApplicantsChartData", {
+            headers: {
+                Authorization: state.session,
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+        })
+        .then((res) => {
+            if (res.data != " "){
+                setJobs(res.data);
+            }
+            
+        })
+        .catch((err) => {
+            history.push({
+                pathname:  "/",
+                state: {
+                    response: "You've have been logged out. Please log-in again"
+                }
+            });
+            console.log(err);
+        });
+    }, []);
 
     return (
         <div>

@@ -69,7 +69,7 @@ export default function Resume() {
         .then((res) => {
             setSuccessMessage('Your resume was uploaded successfully. You can now apply to all roles with 1-click.')
             history.push({
-                pathname:  "/employer/dashboard"
+                pathname:  "/employee/dashboard"
             });
         })
         .catch((err) => {

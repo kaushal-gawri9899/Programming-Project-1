@@ -50,9 +50,9 @@ export default function EmployeeDashboard() {
             setJobs(res.data)
         }).catch((err) => {
             history.push({
-                pathname:  "/",
+                pathname:  "/employee/dashboard",
                 state: {
-                    response: "You've have been logged out. Please log-in again"
+                    response: "No jobs found with the following filter"
                 }
             });
             console.log(err);

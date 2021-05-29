@@ -17,6 +17,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from os.path import join as pjoin
 import shutil
 from pathlib import Path
+from collections import Counter
 
 s3 = boto3.resource('s3')
 
@@ -47,12 +48,19 @@ def applyForJob():
     email = responseForEmail.json().get('Items', [])[0]['email']
     newEmail = email.replace('@','') + '.pdf'
 
-    print(newEmail)
+    # print(newEmail)
 
 
     responeForDes = requests.get('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/getFilterJobs/' + jobId,
-    headers={"Authorization": headers}
+        headers={"Authorization": headers}
     )
+
+    getEmailFromId = requests.get('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/getEmailFromJobId/' + jobId)
+    
+    print(getEmailFromId.json())
+
+
+    employerEmail = getEmailFromId.json()['Items'][0]['email']['S']
 
     jobDescription = responeForDes.json()['Items'][0]['jobDescription']['S']
     # print(jobDescription)
@@ -77,7 +85,7 @@ def applyForJob():
 
     requests.post('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/apply_job',
             headers={"Authorization": headers},
-            json= {"Id":jobId,"name":name,"workExperince":experience,"matchingPercentage":str(matchPercentage)})
+            json= {"Id":jobId,"name":name,"workExperince":experience,"matchingPercentage":str(matchPercentage),"employerEmail":employerEmail})
     
 
     return jobId
@@ -122,15 +130,19 @@ def get_applicants():
             storingJson = returnedJson['Items']
 
             for i in range(number_of_elements):
+                
                 if i > 0:
-                    updatedJson  = {"Items":[{"name": name[i], "email": email[i], "matchingPercentage": matchPercentage[i],
-                        "experience": experience[i]}]}
+                    print(i)
+                    updatedJson  = {"name": name[i], "email": email[i], "matchingPercentage": matchPercentage[i],
+                        "experience": experience[i]}
                     storingJson.append(updatedJson)
-        
-            finalJson = json.dumps(storingJson)
-            print(finalJson)
-    
 
+
+        
+
+            finalJson = json.dumps(storingJson)
+
+            print(finalJson)
 
             return finalJson
         else: 
@@ -142,12 +154,9 @@ def fileUpload():
   
     headers = request.headers.get('Authorization')
 
-    print(headers)
-
     res = requests.get("https://kor6ktyjri.execute-api.us-east-1.amazonaws.com/dev/get_user", 
         headers={"Authorization": headers })       
         
-    print(res.json().get('Items', [])[0]['email'])
     email = res.json().get('Items', [])[0]['email']
 
     target=os.path.join(UPLOAD_FOLDER,'resume_saved')
@@ -173,18 +182,20 @@ def fileUpload():
     
     data = ResumeParser(uploaded_file_name).get_extracted_data()
 
-    print(data)
     name = data['name']
     experience = data['total_experience']
-    degree = data['degree'][0]
-   
+    degree = data['degree']
+    
+    if degree == None:
+        degree = "No Degree Found"
+    else :
+        degree = data['degree'][0]
 
    
     r = requests.post("https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/resume", 
         headers={"Authorization": headers},
         json= {"degree":str(degree),"experience":str(experience),"name":str(name)}) 
     
-   
         
     response = " "
     print("Upload Sucessful")
@@ -264,3 +275,83 @@ def downloadResume():
     
     
     return "None"
+
+@applicantsRoute.route('/getApplicantsChartData', methods=['GET','POST'])
+def getApplicantsChartData():
+    headers = request.headers.get('Authorization')
+    
+    r = requests.get('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/jobs',
+    headers={"Authorization": headers}
+    )
+
+    getNumberOfApplicants = requests.get('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/getTotalApplicant',
+        headers={"Authorization": headers}
+    )
+    
+    number_of_elements = int(r.json()['Count'])
+
+    counter = 0
+
+    number_of_elements_for_applicants = int(getNumberOfApplicants.json()['Count'])
+
+    Id = []
+    experience = []
+    matchingPercentage = [] 
+
+    for i in range(number_of_elements_for_applicants):
+        Id.append(getNumberOfApplicants.json()['Items'][i]['Id']['S'])
+        matchingPercentage.append(float(getNumberOfApplicants.json()['Items'][i]['matchingPercentage']['S']))
+        experience.append(getNumberOfApplicants.json()['Items'][i]['experience']['S'])
+
+    print(Id)
+    print(experience)
+    print(matchingPercentage)
+
+    highestMatchPercentage = max(matchingPercentage)
+    print(highestMatchPercentage)
+
+    # i = matchingPercentage[0]
+    # findingNumberOfMatches = {i:Id.count(i) for i in Id if int(i) > 50}
+    my_dict = {i:Id.count(i) for i in Id}
+    # print(my_dict)
+    # 
+    # print(list(my_dict.keys())[0])
+
+    # f = [(i) for i in number_of_elements_for_applicants if matchingPercentage[i] > 50]
+
+    # {"key1": [1,2,3,"hello"], "key2": A_class_instance }
+    t = []
+    h = ""
+
+    # If Id 
+
+    for i in range(2):
+        if list(my_dict.keys())[i]:
+            # if list(my_dict.keys())[i] == 
+            h += list(my_dict.keys())[i] + ", "
+
+    
+    print(my_dict[list(my_dict.keys())[0]])
+    
+
+    for i in range(len(my_dict.keys())):
+        if getNumberOfApplicants.json()['Items'][i]['Id']['S'] == list(my_dict.keys())[i]:
+            # print(list(my_dict.keys())[i])
+            my_dict[list(my_dict.keys())[i]].append(5)
+            
+    
+    # print(h)
+    # print(findingNumberOfMatches)
+
+
+
+    numberOfMatches = []
+    matches = 0
+
+    # print(my_dict)
+
+    
+    
+    
+    return "None"
+

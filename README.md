@@ -25,6 +25,10 @@ Build an end-to-end job matching portal helping hiring-managers to find their id
 
 (8) Provide employer with matching percentage of a candidate (Using ML Techniques)
 
+- Sample Employer User credentials: 
+- Email: prabhav@mehra.com
+- Password: Password12@
+
 - Employee/ Job Seeker Functionality
 (1) Allow employees to view all the job listings
 
@@ -34,10 +38,18 @@ Build an end-to-end job matching portal helping hiring-managers to find their id
 
 (4) Allow employee to join a video interview session
 
+- Sample Employee User credentials: 
+- Email: ali@aldi.com
+- Password: Password12@
+
 - Admin Dashboard (Required by Client)
 (1) Allow admin to view, edit or delete all job postings
 
 (2) Allow admin to view all job applicants
+
+- Sample Admin User credentials: 
+- Email: admin@admin.com
+- Password: Password12@
 
 # Frontend (ReactJS)
 - Frontend folder contains UI for all pages such as Sign In, Sign Up, Employee dashboard, Employer ashboard  and many more. The pages are connected through the backend (Python) using restful APIS, which were done through AXIOS, are loaded upon request through the axios requests. 

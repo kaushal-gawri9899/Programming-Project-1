@@ -27,8 +27,8 @@ from collections import Counter
 import d6tpipe
 api = d6tpipe.api.APILocal()
 
-s3 = boto3.resource('s3', aws_access_key_id='AKIATZIASX66M3DNOP2C',
-         aws_secret_access_key= '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')
+s3 = boto3.resource('s3', aws_access_key_id='AWS_ACCESS_KEY_ID',
+         aws_secret_access_key= 'AWS_SECRET_ACCESS_KEY')
 """
 
 Credentials used for cloud formation
@@ -37,8 +37,8 @@ Credentials used for cloud formation
 app = Flask(__name__)
 APP_CLIENT_ID = "1rfl5n6j4su0mgmgkfh43fqbov"
 s3_client = boto3.client('s3', region_name='us-east-1',
-         aws_access_key_id='AKIATZIASX66M3DNOP2C',
-         aws_secret_access_key= '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')
+         aws_access_key_id='AWS_ACCESS_KEY_ID',
+         aws_secret_access_key= 'AWS_SECRET_ACCESS_KEY')
 UPLOAD_FOLDER = ''
 applicantsRoute = Blueprint('applicantsRoute', __name__)
 BUCKET_NAME='programming-project-resume'

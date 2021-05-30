@@ -1,3 +1,9 @@
+
+"""
+Integration tests which checks that multiple moodules of the app work toghter.
+
+"""
+
 import unittest
 import requests
 import boto3

@@ -1,3 +1,10 @@
+/*
+
+Functional component which allows employee to upload their resume
+Uses axios to get the file and send it to restful apis and 
+
+*/
+
 import React, { useState, useContext, useRef } from 'react';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';

@@ -1,3 +1,7 @@
+"""
+A python class to conduct unit test to test out all the modules of the appiicants individually.
+"""
+
 import unittest
 import requests
 import boto3

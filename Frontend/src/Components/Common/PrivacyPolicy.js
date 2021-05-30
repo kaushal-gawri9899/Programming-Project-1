@@ -1,3 +1,9 @@
+/*
+
+Functional component which shows the privacy policy to the users, required to indicate the user about 
+their privacy upon signing up
+*/
+
 import React, { useState, useContext, useRef } from 'react';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';

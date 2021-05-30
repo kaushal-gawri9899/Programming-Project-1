@@ -1,3 +1,11 @@
+
+
+"""
+A python class which handles user sign up and login functionalty connected with AWS congito user pool.
+
+"""
+
+
 from warnings import simplefilter 
 simplefilter(action='ignore', category=DeprecationWarning)
 from flask import Flask, redirect, url_for, request, jsonify, session, Blueprint, jsonify
@@ -33,6 +41,10 @@ BUCKET_NAME='programming-project-resume'
 cognitoRoute = Blueprint('cognitoRoute', __name__)
 
 
+"""
+Allows the user to sign up to the application and  store the required informatioon to AWS cognito user pool.
+
+"""
 
 @cognitoRoute.route('/auth/signup', methods=['POST'])
 def signup():
@@ -70,6 +82,11 @@ def signup():
     return 'a'
 
 
+"""
+Allows the user to login in to the application and provides an ID token upon success which is used to authorise the user
+and provide access controls.
+
+"""
 @cognitoRoute.route('/auth/login', methods=['GET','POST'])
 def login():
     if request.method == 'POST':
@@ -115,7 +132,10 @@ def login():
         
     return 'a'
 
+"""
+Manages user profile.
 
+"""
 @cognitoRoute.route('/Userprofile', methods=['GET','POST'])
 def user_profile():
     headers = request.headers.get('Authorization')

@@ -1,3 +1,10 @@
+/*
+
+Functional component which handles the data analysis. Allows employers to see their job data,
+matched candidates and the heighest matchiing percentage. This gives bettet idea of how the jobs are 
+performing.
+
+*/
 import React, { useState, useContext, useEffect } from 'react';
 import { useTheme } from '@material-ui/core/styles';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip  } from 'recharts';

@@ -1,3 +1,8 @@
+/*
+Functional component which handles the dashboard of the employee user type. Shows all the jobs to the user
+in cards
+*/
+
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router';

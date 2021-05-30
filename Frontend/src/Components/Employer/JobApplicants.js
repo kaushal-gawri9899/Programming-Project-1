@@ -1,3 +1,9 @@
+/*
+
+Functional component for displaying all the applicants of each jobs. Gets response from rest apis
+and displays it in a tabular form. Allows user to download resume of each applicant
+*/
+
 import React, { useState, useContext, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useHistory } from 'react-router';

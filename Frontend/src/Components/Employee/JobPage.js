@@ -1,3 +1,8 @@
+/*
+Functional component which handles job description and shows a detailed version of the job along with other
+important information like location, salary, job type etc.
+*/
+
 import React, { useState, useContext, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';

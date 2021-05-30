@@ -1,3 +1,9 @@
+/*
+
+Functional component which handles the jobs table to be shown to the admin user type
+
+*/
+
 import React, { useEffect, useState, useContext } from 'react';
 import { useHistory } from 'react-router';
 import axios from 'axios';

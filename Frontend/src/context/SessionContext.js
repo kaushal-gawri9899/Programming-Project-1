@@ -1,3 +1,9 @@
+/*
+A .js class which stores the ID token provided to the user upon logging
+in context (which is more secure way compared to session)
+
+*/
+
 import React, { useState } from 'react'
 
 export const SessionContext =  React.createContext({

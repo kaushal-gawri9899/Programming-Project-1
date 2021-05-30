@@ -1,3 +1,9 @@
+"""
+A python class which manages jobs. Allows Hirinig managers to get their respective jobs, and perform
+functionality like edit,delete,create.
+
+"""
+
 from flask import Flask, render_template, redirect, url_for, request, jsonify, session, Blueprint, jsonify
 from botocore.exceptions import ClientError
 from boto3.dynamodb.conditions import Key, Attr
@@ -18,7 +24,10 @@ APP_CLIENT_ID = "1rfl5n6j4su0mgmgkfh43fqbov"
 
 jobsRoute = Blueprint('jobsRoute', __name__)
 
+"""
+Allows user to post a job through the help of AWS lambda functions which stores the job to dynamoDB
 
+"""
 @jobsRoute.route('/create', methods=['GET','POST'])
 def postPosting():
     if request.method == 'POST':
@@ -36,23 +45,19 @@ def postPosting():
         Id = uuid.uuid4()
       
 
-
-  
         r = requests.post('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/create_job',
             headers={"Authorization": sessionId},
             json= {"Id":str(Id),"jobTitle":jobTitle,"jobDescription":jobDescription,"location":location,"jobType":jobType,
             "workExperince":workExperince,"degree":"Degreeof"+str(degree),"companyName":companyName})
       
-
-
-    
-
-     
     print(r.json())
    
-
     return "a"
+"""
+Allows user to get their jobs through the help of AWS lambda functions which returns json object containing
+job details dervied from dynamoDB
 
+"""
 @jobsRoute.route('/jobs', methods=['GET','POST'])
 def getJobs():
     headers = request.headers.get('Authorization')
@@ -96,13 +101,16 @@ def getJobs():
                 storingJson.append(updatedJson)
         
         finalJson = json.dumps(storingJson)
-        # print(finalJson)
 
 
         return finalJson
     else:
         return " "
 
+"""
+Get jobs which are Filterd based on degree type
+
+"""
 @jobsRoute.route('/getjobs', methods=['GET','POST'])
 def getFilteredJobs():
     headers = request.headers.get('Authorization')
@@ -154,15 +162,14 @@ def getFilteredJobs():
         finalJson = json.dumps(storingJson)
         print(finalJson)
 
-        
-        
-
-
         return finalJson
     else:
         return "  "
 
+"""
+Edit a job posting on job id through the help of AWS lambda functions.
 
+"""
 @jobsRoute.route('/edit_job_posting', methods=['GET','POST'])
 def editPosting():
     if request.method == 'POST':
@@ -181,11 +188,6 @@ def editPosting():
             headers={"Authorization": sessionId},
             json= {"id":final_job_id,"jobTitle":jobTitle,"jobDescription":jobDescription,"location":location,"jobType":jobType,
             "workExperince":workExperince,"companyName":companyName})
-       
-
-
-    
-
      
     print(r.json())
   
@@ -224,7 +226,7 @@ def getFilteredJobsId():
         workExperience.append(r.json()['Items'][i]['workExperince']['S'])
         jobTitle.append(r.json()['Items'][i]['jobTitle']['S'])
         companyName.append(r.json()['Items'][i]['companyName']['S'])
-        # degree.append(r.json()['Items'][i]['degree']['S'])
+      
 
 
     
@@ -238,7 +240,10 @@ def getFilteredJobsId():
 
 
     return finalJson
+"""
+Delete a job posting on job id through the help of AWS lambda functions.
 
+"""
 @jobsRoute.route('/delete_job', methods=['POST','GET','DELETE'])
 def delete():
     if request.method == 'DELETE':
@@ -247,13 +252,16 @@ def delete():
         sessionId = data['sessionId']
         jobId = data['id']
         print(jobId)
-        # table = dynamodb.Table('Bookings')
+       
         r = requests.delete('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/deleteJob',
             headers={"Authorization": sessionId}, json= {"id":jobId})
         print(r.json)
        
     return "d"
+"""
+Search a job posting based on job id through the help of AWS lambda functions.
 
+"""
 @jobsRoute.route('/getSearchedjobs', methods=['GET','POST'])
 def getSearchedJobs():
     data = request.get_json()
@@ -299,12 +307,11 @@ def getSearchedJobs():
     
     finalJson = json.dumps(storingJson)
 
-    
-   
-  
    
     return finalJson
-
+"""
+Get data of matched candidates with the help of AWS lambda functions.
+"""
 @jobsRoute.route('/getAlljobs', methods=['GET','POST'])
 def getMatcheddata():
     
@@ -352,14 +359,17 @@ def getMatcheddata():
     finalJson = json.dumps(storingJson)
    
     return finalJson
+"""
+A demo job matching function which returns match percentage of demo text.
 
+"""
 @jobsRoute.route('/match', methods=['GET','POST'])
 def job_match():
 
     resume = extract_text(stored_email)
     text_resume = str(resume)#Summarize the text with ratio 0.1 (10% of the total words.)
     summarized_resume = summarize(text_resume, ratio=0.5)
-    # print(summarized_resume)
+  
 
     text = "Given Text" # Prompt for the Job description.
     # Convert text to string format
@@ -373,9 +383,14 @@ def job_match():
 
     matchPercentage = cosine_similarity(count_matrix)[0][1] * 100
     matchPercentage = round(matchPercentage, 2) # round to two decimal
-    # print("Your resume matches about “+ str(matchPercentage)+ “% of the job description.")
 
     return " "
+
+
+"""
+Get experience of a given candiidate
+
+"""
 
 @jobsRoute.route('/experience', methods=['GET','POST'])
 def getExperience():
@@ -390,6 +405,11 @@ def getExperience():
 
     return 'nothing'
 
+
+"""
+Get all jobs for the admin user to see and monitor the application using AWS lambda functions
+
+"""
 @jobsRoute.route('/jobsForAdmin', methods=['GET','POST'])
 def getJobsForAdmin():
 

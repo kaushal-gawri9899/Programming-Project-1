@@ -1,3 +1,7 @@
+/*
+Functional component which material ui cards to display job information summerized.
+*/
+
 import React from 'react';
 import { useHistory } from 'react-router';
 import { makeStyles } from '@material-ui/core/styles';
@@ -72,22 +76,7 @@ export default function JobCard(props) {
                 </Typography>
             </CardContent> 
 
-            {/* <CardHeader
-                title="Graduate Diploma in Early Childhood Education                                    "
-                titleTypographyProps={{ color: "secondary", variant: "h6" }}
-                subheader="Royal Melbourne Institute of Technology                                    "
-                avatar={
-                    <Avatar className={classes.avatar}>{job.companyName[0]}</Avatar>
-                }
-                action={
-                    localStorage.getItem(job.Id) ? <DoneAllIcon className={classes.success} /> : ''
-                }
-            />
-            <CardContent className={classes.cardContent}>
-                <Typography variant="body2" component="p" color="secondary">
-                    { getTruncatedText("The GD204 Graduate Diploma in Early Childhood Education is designed to enable you to work as a professional teacher in early childhood education contexts.You will be equipped with the necessary critical and pedagogical strategies to become an effective teacher across a range of early childhood education contexts.", 250, true) }
-                </Typography>
-            </CardContent>  */}
+           
         </Card>
     );
 

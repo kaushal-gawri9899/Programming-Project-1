@@ -1,3 +1,9 @@
+/*
+
+Functional component for an employer dashboard. Calls components containg line charts showing data
+and jobs table with the jobs of the employer
+Displaying error message if not successful
+*/
 import React, {useState, useEffect, useContext} from 'react';
 import { useHistory, useLocation } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
@@ -118,11 +124,7 @@ export default function EmployerDashboard() {
 										for Software Enginner
 									</Typography>
 								</div>
-								{/* <div>
-									<Link color="primary" href="#">
-									View Applicant
-									</Link>
-								</div> */}
+								
 							</Paper>
 						</Grid>
 						<Grid item xs={12}>

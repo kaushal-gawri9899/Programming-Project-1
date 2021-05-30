@@ -1,3 +1,9 @@
+/*
+
+Functional component for displaying all the jobs of each employer. Gets response from rest apis
+and displays it in a tabular form.Allows user to view it and edit/delete the job.
+*/
+
 import React, { useEffect, useState, useContext } from 'react';
 import { useHistory } from 'react-router';
 import axios from 'axios';

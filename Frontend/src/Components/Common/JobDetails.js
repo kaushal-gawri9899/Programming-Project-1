@@ -1,3 +1,10 @@
+/*
+
+Functional component which allows both the user types to see job details of each job, hence put in a Common folder
+reducing code redundcy
+
+*/
+
 import React, { useState, useContext, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';

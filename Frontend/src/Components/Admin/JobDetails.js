@@ -1,3 +1,9 @@
+/*
+
+Functional component which allows admin to see job details of each job
+
+*/
+
 import React, { useState, useContext, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useHistory } from 'react-router';

@@ -1,3 +1,9 @@
+"""
+Python class which handles applicants for each job. Backend API functions allowing people to apply to jobs,
+show Hiring manager their respective candidates, allowing people to upload their resume etc.
+
+"""
+
 import os
 from flask import Flask, render_template, redirect, url_for, request, jsonify, session, Blueprint, jsonify
 import boto3
@@ -23,7 +29,11 @@ api = d6tpipe.api.APILocal()
 
 s3 = boto3.resource('s3', aws_access_key_id='AKIATZIASX66M3DNOP2C',
          aws_secret_access_key= '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')
+"""
 
+Credentials used for cloud formation
+
+"""
 app = Flask(__name__)
 APP_CLIENT_ID = "1rfl5n6j4su0mgmgkfh43fqbov"
 s3_client = boto3.client('s3', region_name='us-east-1',
@@ -33,6 +43,12 @@ UPLOAD_FOLDER = ''
 applicantsRoute = Blueprint('applicantsRoute', __name__)
 BUCKET_NAME='programming-project-resume'
 
+"""
+
+Allows people to apply for jobs by extracting their resumes from s3 bucket.
+Runs a machine learning algorithm on the resume to get match percentage and saves the applicant information to dynamodb.
+
+"""
 
 @applicantsRoute.route('/applyjob', methods=['GET','POST'])
 def applyForJob():
@@ -53,8 +69,6 @@ def applyForJob():
     email = responseForEmail.json().get('Items', [])[0]['email']
     newEmail = email.replace('@','') + '.pdf'
 
-    # print(newEmail)
-
 
     responeForDes = requests.get('https://jypfk3zpod.execute-api.us-east-1.amazonaws.com/dev/getFilterJobs/' + jobId,
         headers={"Authorization": headers}
@@ -68,7 +82,7 @@ def applyForJob():
     employerEmail = getEmailFromId.json()['Items'][0]['email']['S']
 
     jobDescription = responeForDes.json()['Items'][0]['jobDescription']['S']
-    # print(jobDescription)
+   
 
     resume = extract_text('resume_saved/' + newEmail)
     text_resume = str(resume)
@@ -95,6 +109,12 @@ def applyForJob():
 
     return jobId
 
+"""
+
+Gets applicants from dynamoDB of a particular employer based on logged in token and 
+returns all the applicants in a json format.
+
+"""
 @applicantsRoute.route('/get_applicant', methods=['POST','GET'])
 def get_applicants():
 
@@ -154,6 +174,11 @@ def get_applicants():
             return "None"
     return "None"
 
+"""
+
+Allows users to upload their resumes to s3 with their email address as the filename
+"""
+
 @applicantsRoute.route('/upload', methods=['GET','POST'])
 def fileUpload():
   
@@ -206,6 +231,10 @@ def fileUpload():
     print("Upload Sucessful")
     return response
 
+"""
+
+Filters a jobs depending upon the filters which include location and job type.
+"""
 @applicantsRoute.route('/getSearchedjobs', methods=['GET','POST'])
 def getSearchedJobs():
     data = request.get_json()
@@ -250,12 +279,12 @@ def getSearchedJobs():
             storingJson.append(updatedJson)
     
     finalJson = json.dumps(storingJson)
-
-    
-   
-  
    
     return finalJson
+
+"""
+Generates a presigned url which downloads the resume of a particular applicant.
+"""
 
 @applicantsRoute.route('/downloadResume', methods=['GET','POST'])
 def downloadResume():
@@ -277,6 +306,12 @@ def downloadResume():
             raise
     
     return url
+
+
+"""
+Gets data of all the jobs posted by particular employer, to be shown through the help of a line chart.
+
+"""
 
 @applicantsRoute.route('/getApplicantsChartData', methods=['GET','POST'])
 def getApplicantsChartData():
@@ -311,7 +346,7 @@ def getApplicantsChartData():
     print(Id)
     print(experience)
     print(matchingPercentage)
-    # if len(matchingPercentage) != 0:
+   
     highestMatchPercentage = max(matchingPercentage)
 
     my_dict = {i:Id.count(i) for i in Id}
@@ -349,12 +384,15 @@ def getApplicantsChartData():
 
     json_data = json.dumps(updatedJson)
 
-
     print(json_data)
 
-    
     return json_data
 
+
+"""
+Find the total number of matched candidates based on the threshold, which is 30% in this case.
+
+"""
 def findNumberOfMatches(Id, headers):
     counter = 0
 

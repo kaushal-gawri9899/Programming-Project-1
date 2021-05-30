@@ -1,3 +1,8 @@
+/*
+
+Functional component for a common appbar along all employer pages
+
+*/
 import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';

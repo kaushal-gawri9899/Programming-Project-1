@@ -1,3 +1,9 @@
+/*
+
+Functional component which handles the dashboard of the admin user type
+
+*/
+
 import React from 'react';
 import { useHistory, useLocation } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';

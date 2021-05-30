@@ -1,3 +1,9 @@
+/*
+
+Functional component which allows admin to edit a job based on jobID.
+
+*/
+
 import React, { useState, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router';
 import { useParams } from 'react-router-dom';

@@ -1,3 +1,8 @@
+/*
+Functional component which handles job filters and shows filterd jobs to the user depending upon
+location and job type.
+*/
+
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from "@material-ui/core/Container";

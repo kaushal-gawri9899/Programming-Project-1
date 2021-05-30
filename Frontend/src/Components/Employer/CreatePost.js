@@ -1,3 +1,10 @@
+/*
+
+Functional component for an employer to create a job posting by saving details using props
+and send response to rest apis.
+Displaying error message if not successful
+*/
+
 import React, { useState, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router';
 import { useParams } from 'react-router-dom';

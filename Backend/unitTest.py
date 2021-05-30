@@ -8,6 +8,33 @@ APP_CLIENT_ID = "1rfl5n6j4su0mgmgkfh43fqbov"
 jobID = "A12"
 
 class TestJobMatchMakingPortal(unittest.TestCase):
+ # Return true if a user is created with a usertype Admin
+    def test_return_true_if_signed_up_as_a_admin(self):
+
+        user_email = "ali@ninja.com"
+        usertype = "Admin"
+        postUser = requests.post('https://kor6ktyjri.execute-api.us-east-1.amazonaws.com/dev/add_usertype',
+            json= {"email":user_email,"usertype":usertype})
+
+        response = dynamodb_client.scan(
+            ExpressionAttributeNames={
+                '#E': 'email',
+                '#U': 'usertype',                  
+            },
+            ExpressionAttributeValues={
+                ':a': {
+                    'S': user_email,
+                },
+            },
+            FilterExpression='email = :a',
+            ProjectionExpression='#E, #U',
+            TableName='user_details',
+        )
+
+        returnedUserType = response['Items'][0]['usertype']['S']
+        
+        self.assertEqual(usertype,returnedUserType)
+
  # Return true if a user is created with a usertype Employer
     def test_return_true_if_signed_up_as_a_employer(self):
 
@@ -61,6 +88,31 @@ class TestJobMatchMakingPortal(unittest.TestCase):
         returnedUserType = response['Items'][0]['usertype']['S']
 
         self.assertEqual(usertype,returnedUserType)
+
+# Return true if a user is Signed In as Admin
+    def test_return_true_if_user__can_sign_in_as_an_admin(self):
+        
+        user_email = "admin@admin.com"
+        password = "Password12@"
+
+        # User already signed up and confirmed on cognito
+
+        loginUser =  cognito_client.initiate_auth(ClientId=APP_CLIENT_ID,
+                                        AuthFlow='USER_PASSWORD_AUTH',
+                                        AuthParameters={
+                                        'USERNAME': user_email,
+                                        'PASSWORD': password
+                                        }
+        )
+
+        id_token = loginUser['AuthenticationResult']['IdToken']
+
+        r = requests.get("https://kor6ktyjri.execute-api.us-east-1.amazonaws.com/dev/get_user", 
+        headers={"Authorization": id_token })  
+
+        usertype = r.json().get('Items', [])[0]['usertype']
+
+        self.assertEqual(usertype,"Admin")
 
 # Return true if a user is Signed In as Employer
     def test_return_true_if_user__can_sign_in_as_an_Employer(self):

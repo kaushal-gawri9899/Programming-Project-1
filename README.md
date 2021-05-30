@@ -45,8 +45,8 @@ Frontend folder contains UI for all pages such as Sign In, Sign Up, Employee das
 NPM version used: 7.11.2
 
 To run the frontend, you have to run the following commands: 
-    $ npm install
-    $ npm start
+ -   $ npm install
+ -   $ npm start
 
 - Backend (Python)
 Backend contains restful APIS which triggers lambda functions. Backend uses AWS dynamodb and s3 as a database. It also authenticates a user using AWS Cognito. 
@@ -55,5 +55,5 @@ Python Version used: 3.7.7
 Flask Version used: 1.1.2
 
 To run the backend, you have to run the following commands: 
-    $ pip3 install -r requirements.txt 
-    $ python3 main.py
+-   $ pip3 install -r requirements.txt 
+-   $ python3 main.py
